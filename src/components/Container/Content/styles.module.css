@@ -1,0 +1,22 @@
+.content {
+    position: relative;
+    width: 100%;
+    height: min-content;
+    padding: 40px 0 0;
+    max-width: 1440px;
+
+    margin: 0 auto;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    flex-wrap: nowrap;
+    gap: 72px;
+
+    opacity: 1;
+    overflow: visible;
+    z-index: 4;
+
+    transform: perspective(1200px);
+}

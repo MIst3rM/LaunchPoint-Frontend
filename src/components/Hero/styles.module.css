@@ -1,0 +1,54 @@
+.hero {
+    position: relative;
+    width: 100%;
+    height: min-content;
+    overflow: hidden;
+
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+
+    padding: 0;
+}
+
+.title {
+    position: relative;
+    width: 80%;
+    height: auto;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    flex-shrink: 0;
+    outline: none;
+
+    white-space: pre-wrap;
+    word-break: break-word;
+    word-wrap: break-word;
+    text-align: center;
+
+    z-index: 4;
+}
+
+.subtitle {
+    position: relative;
+    width: 90%;
+    height: auto;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    flex-shrink: 0;
+    outline: none;
+
+    white-space: pre-wrap;
+    word-break: break-word;
+    word-wrap: break-word;
+    text-align: center;
+
+    z-index: 4;
+    color: rgba(164, 171, 180)
+}
