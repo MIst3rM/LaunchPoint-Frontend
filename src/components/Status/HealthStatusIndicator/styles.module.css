@@ -1,0 +1,111 @@
+.wrapper {
+    align-content: center;
+    align-items: center;
+    background-color: #ffffff;
+    border-radius: 24px;
+    display: flex;
+    flex: 1 0 0px;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    gap: 10px;
+    height: 100%;
+    justify-content: center;
+    padding: 0;
+    position: relative;
+    transform: perspective(1200px);
+    width: 1px
+}
+
+.gaugeContainer {
+    height: 230px;
+    opacity: .9;
+    overflow: visible;
+    position: relative;
+    width: 230px
+}
+
+.gaugeCircle {
+    aspect-ratio: 1 / 1;
+    background-color: #ebebeb;
+    border-radius: 100%;
+    height: 122px;
+    left: 54px;
+    position: absolute;
+    top: 54px;
+    width: 121px
+}
+
+.gaugeInnerContainer {
+    aspect-ratio: 1.0955414012738853 / 1;
+    height: 158px;
+    left: calc(49.56521739130437% - 173px / 2);
+    overflow: visible;
+    position: absolute;
+    top: 25px;
+    width: 173px
+}
+
+.gaugeBackgroundImageWrapper {
+    position: absolute;
+    border-radius: inherit;
+    inset: 0px;
+}
+
+.gaugeBackgroundImage {
+    display: block;
+    width: 100%;
+    border-radius: inherit;
+    object-position: center center;
+    object-fit: cover;
+    image-rendering: auto;
+    overflow-clip-margin: content-box;
+    overflow: clip;
+}
+
+.cube {
+    inset: 82px 81px 81px 82px;
+    overflow: visible;
+    position: absolute;
+    transform: perspective(1200px) rotate(-270deg)
+}
+
+.ellipse {
+    aspect-ratio: 1 / 1;
+    background-color: #1f1e18;
+    border-radius: 100%;
+    height: 17px;
+    left: 26px;
+    position: absolute;
+    top: 26px;
+    width: 17px
+}
+
+.ticker {
+    position: absolute;
+    bottom: 50%;
+    /* Align the bottom of the ticker with the center of the gauge */
+    left: 50%;
+    /* Center horizontally */
+    /* Adjust width and height as needed */
+    height: 100px;
+    /* Length of the ticker */
+    width: 5px;
+    /* Width of the ticker */
+    background-color: #1f1e18;
+    border-radius: 24px;
+    /* The transform property is managed by Framer Motion */
+    /* Ensure transform-origin is at the bottom center, where it attaches to the gauge */
+    transform-origin: 100% 100%;
+    /* or 'bottom center' depending on the orientation of your ticker */
+}
+
+.tickerDot {
+    aspect-ratio: 1 / 1;
+    background-color: #fff;
+    border-radius: 100%;
+    height: 7px;
+    left: 31px;
+    position: absolute;
+    top: 31px;
+    width: 7px
+}

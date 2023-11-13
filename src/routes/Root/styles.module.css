@@ -1,0 +1,47 @@
+.signedOut {
+    width: 50%;
+    background-color: transparent;
+    align-items: center;
+}
+
+.signedIn {
+    width: 90%;
+    background-color: transparent;
+}
+
+.row {
+    width: 100%;
+    flex-direction: row;
+    background-color: transparent;
+}
+
+.stationsOverview {
+    width: 1px;
+    height: 400px;
+
+    flex: 1 0 0px;
+    gap: 10px;
+
+    overflow: hidden;
+    padding: 16px;
+
+    will-change: transform;
+}
+
+.stationsOverview>h3 {
+    color: rgb(89, 98, 105);
+}
+
+.table {
+    width: 70%;
+    height: auto;
+
+    gap: 10px;
+    align-self: stretch;
+    align-items: center;
+
+    overflow: hidden;
+    padding: 16px;
+
+    will-change: transform;
+}

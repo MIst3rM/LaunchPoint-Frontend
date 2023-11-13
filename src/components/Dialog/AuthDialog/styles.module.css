@@ -1,0 +1,36 @@
+.authDialogContainer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    z-index: 5;
+}
+
+.authDialog {
+    width: 500px;
+    height: 500px;
+
+    margin: 0 auto;
+
+    z-index: 6;
+    overflow: hidden;
+    padding: 20px;
+
+    color: white;
+    background-color: rgb(69, 69, 69, 1.0);
+
+    box-shadow:
+        0 1px 1px hsla(0, 0%, 100%, 0.075),
+        0 2px 2px hsla(0, 0%, 100%, 0.075),
+        0 4px 4px hsla(0, 0%, 100%, 0.075),
+        0 8px 8px hsla(0, 0%, 100%, 0.075),
+        0 16px 16px hsla(0, 0%, 100%, 0.075);
+
+    border-radius: 15px;
+}

@@ -1,0 +1,18 @@
+.digit {
+    position: absolute;
+    top: 0;
+
+    font-weight: 600;
+}
+
+.digitContainer {
+    position: relative;
+    width: 0.7em;
+}
+
+.digitsContainer {
+    display: flex;
+    font-size: 40px;
+    overflow: hidden;
+    height: 1.1em;
+}

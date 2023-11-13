@@ -1,19 +1,31 @@
 import { useEffect, useRef, useState } from 'react'
+import { Link } from "react-router-dom";
 
 import styles from './styles.module.css'
 import MenuContainer from '../Menu/MenuContainer/index.'
 import Button from '../Button'
-
-type NavOption = 'Dashboard' | 'Deployments' | 'Live View'
+import textConstants from '../../textConstants'
+import { NavOption, AuthDialogType } from '../../types'
+import AuthDialog from '../Dialog/AuthDialog'
 
 const Header = () => {
-
 	const [selectedNavOption, setSelectedNavOption] = useState<NavOption | null>(null)
 	const [selectedNavOptionPosition, setSelectedNavOptionPosition] = useState<{ x: number }>({ x: 0 })
+	//TODO: Replace this with a proper authentication check
+	const [isSignedIn, setIsSignedIn] = useState(true);
+	const [isAuthDialogOpen, setIsAuthDialogOpen] = useState(false)
+	const [activeAuthType, setActiveAuthType] = useState<AuthDialogType>('login');
 
-	const dashboard = useRef<HTMLParagraphElement>(null)
-	const deployments = useRef<HTMLParagraphElement>(null)
-	const liveview = useRef<HTMLParagraphElement>(null)
+	const option1 = useRef<HTMLParagraphElement>(null)
+	const option2 = useRef<HTMLParagraphElement>(null)
+	const option3 = useRef<HTMLParagraphElement>(null)
+
+	const handleShowAuthDialog = (type?: AuthDialogType) => {
+		if (type) {
+			setActiveAuthType(type);
+		}
+		setIsAuthDialogOpen(!isAuthDialogOpen);
+	};
 
 	useEffect(() => {
 		const glowEffects = document.querySelectorAll(".glowEffect");
@@ -25,7 +37,7 @@ const Header = () => {
 				line.setAttribute("rx", rx);
 			});
 		});
-	}, [])
+	}, [isAuthDialogOpen])
 
 
 	useEffect(() => {
@@ -49,20 +61,20 @@ const Header = () => {
 		let navOptionScreenPosition: DOMRect
 
 		switch (navItemId) {
-			case 'Dashboard':
-				if (dashboard === null || dashboard.current === null)
+			case textConstants.navBarOptions.option1:
+				if (option1 === null || option1.current === null)
 					return
-				navOptionScreenPosition = dashboard.current.getBoundingClientRect()
+				navOptionScreenPosition = option1.current.getBoundingClientRect()
 				break
-			case 'Deployments':
-				if (deployments === null || deployments.current === null)
+			case textConstants.navBarOptions.option2:
+				if (option2 === null || option2.current === null)
 					return
-				navOptionScreenPosition = deployments.current.getBoundingClientRect()
+				navOptionScreenPosition = option2.current.getBoundingClientRect()
 				break
-			case 'Live View':
-				if (liveview === null || liveview.current === null)
+			case textConstants.navBarOptions.option3:
+				if (option3 === null || option3.current === null)
 					return
-				navOptionScreenPosition = liveview.current.getBoundingClientRect()
+				navOptionScreenPosition = option3.current.getBoundingClientRect()
 				break
 			default:
 				return
@@ -78,53 +90,77 @@ const Header = () => {
 		setSelectedNavOptionPosition({ x: 0 })
 	}
 
-
 	const onNavOptionClicked = (navItemId: NavOption) => {
 		selectedNavOption !== null ? onMouseLeave() : onNavOptionHover(navItemId)
 	}
 
+	const handleNavOptionInteraction = (option: NavOption) => {
+		// This function will handle hover and focus events
+		const handleInteraction = () => {
+			onNavOptionHover(option);
+		};
+
+		// This function will handle click events
+		const handleClick = () => {
+			onNavOptionClicked(option);
+		};
+
+		return {
+			onMouseEnter: handleInteraction,
+			onFocus: handleInteraction,
+			onClick: handleClick,
+			onTouchStart: handleClick
+		};
+	};
+
 
 	return (
-		<header className={styles.header}>
-			<h1>LauchPoint.</h1>
-			<div onMouseLeave={onMouseLeave} className={styles.navigationWrapper}>
-				<nav className={styles.navigationItems}>
-					<button
-						onMouseEnter={() => onNavOptionHover('Dashboard')}
-						onClick={() => onNavOptionClicked('Dashboard')}
-						onFocus={() => onNavOptionHover('Dashboard')}
-						onTouchStart={() => onNavOptionClicked('Dashboard')}
-					>
-						<p ref={dashboard}>Dashboard</p>
-					</button>
+		<header className={styles.header} style={{
+			justifyContent: isSignedIn ? 'center' : 'space-between'
+		}}>
+			<h1>{textConstants.app.name}</h1>
+			{isSignedIn &&
+				<div onMouseLeave={onMouseLeave} className={styles.navigationWrapper}>
+					<nav className={styles.navigationItems}>
+						<button {...handleNavOptionInteraction('Dashboard')}>
+							<p ref={option1}>{textConstants.navBarOptions.option1}</p>
+						</button>
 
-					<button
-						onMouseEnter={() => onNavOptionHover('Deployments')}
-						onClick={() => onNavOptionClicked('Deployments')}
-						onFocus={() => onNavOptionHover('Deployments')}
-						onTouchStart={() => onNavOptionClicked('Deployments')}
-					>
-						<p ref={deployments}>Deployments</p>
-					</button>
+						<button {...handleNavOptionInteraction('Deployments')}>
+							<p ref={option2}>{textConstants.navBarOptions.option2}</p>
+						</button>
 
-					<button
-						onMouseEnter={() => onNavOptionHover('Live View')}
-						onClick={() => onNavOptionClicked('Live View')}
-						onFocus={() => onNavOptionHover('Live View')}
-						onTouchStart={() => onNavOptionClicked('Live View')}
-					>
-						<p ref={liveview}>Live View</p>
-					</button>
-				</nav>
-				<MenuContainer
-					selectedNavOption={selectedNavOption}
-					selectedNavOptionPosition={selectedNavOptionPosition}
-				/>
-			</div>
-			<div className={styles.authButtonsWrapper}>
-				<Button text='Sign Up' type='signup' />
-				<Button text='Login' type='login' />
-			</div>
+						<button {...handleNavOptionInteraction('Live View')}>
+							<p ref={option3}>{textConstants.navBarOptions.option3}</p>
+						</button>
+					</nav>
+					<MenuContainer
+						selectedNavOption={selectedNavOption}
+						selectedNavOptionPosition={selectedNavOptionPosition}
+					/>
+				</div>
+			}
+			{!isSignedIn &&
+				<div className={styles.authButtonsWrapper}>
+					{!isAuthDialogOpen &&
+						<>
+							<Button text={textConstants.buttons.signUp[1]} type='signup' layoutId='signupLayout' showDialog={() => handleShowAuthDialog('signup')} />
+							<Button text={textConstants.buttons.login[1]} type='login' layoutId='loginLayout' showDialog={() => handleShowAuthDialog('login')} />
+						</>
+					}
+					{isAuthDialogOpen &&
+						<>
+							{activeAuthType === 'login' &&
+								<Button text={textConstants.buttons.signUp[1]} type='signup' layoutId='signupLayout' showDialog={() => handleShowAuthDialog('signup')} />
+							}
+							{activeAuthType === 'signup' &&
+								<Button text={textConstants.buttons.login[1]} type='login' layoutId='loginLayout' showDialog={() => handleShowAuthDialog('login')} />
+							}
+							<AuthDialog type={activeAuthType} layoutId={`${activeAuthType}Layout`} isOpen={isAuthDialogOpen} showDialog={() => handleShowAuthDialog(undefined)} />
+						</>
+					}
+				</div>
+			}
 		</header>
 	)
 }
