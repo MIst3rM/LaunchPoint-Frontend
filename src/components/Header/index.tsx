@@ -5,20 +5,25 @@ import styles from './styles.module.css'
 import MenuContainer from '../Menu/MenuContainer/index.'
 import Button from '../Button'
 import textConstants from '../../textConstants'
-import { NavOption } from '../../types'
+import { NavOption, AuthDialogType } from '../../types'
 import AuthDialog from '../Dialog/AuthDialog'
 
 const Header = () => {
 	const [selectedNavOption, setSelectedNavOption] = useState<NavOption | null>(null)
 	const [selectedNavOptionPosition, setSelectedNavOptionPosition] = useState<{ x: number }>({ x: 0 })
-	const [signedIn, setSignedIn] = useState(false)
+	//TODO: Replace this with a proper authentication check
+	const [isSignedIn, setIsSignedIn] = useState(true);
 	const [isAuthDialogOpen, setIsAuthDialogOpen] = useState(false)
+	const [activeAuthType, setActiveAuthType] = useState<AuthDialogType>('login');
 
 	const option1 = useRef<HTMLParagraphElement>(null)
 	const option2 = useRef<HTMLParagraphElement>(null)
 	const option3 = useRef<HTMLParagraphElement>(null)
 
-	const handleShowAuthDialog = () => {
+	const handleShowAuthDialog = (type?: AuthDialogType) => {
+		if (type) {
+			setActiveAuthType(type);
+		}
 		setIsAuthDialogOpen(!isAuthDialogOpen);
 	};
 
@@ -32,7 +37,7 @@ const Header = () => {
 				line.setAttribute("rx", rx);
 			});
 		});
-	}, [])
+	}, [isAuthDialogOpen])
 
 
 	useEffect(() => {
@@ -111,10 +116,10 @@ const Header = () => {
 
 	return (
 		<header className={styles.header} style={{
-			justifyContent: signedIn ? 'center' : 'space-between'
+			justifyContent: isSignedIn ? 'center' : 'space-between'
 		}}>
 			<h1>{textConstants.app.name}</h1>
-			{signedIn &&
+			{isSignedIn &&
 				<div onMouseLeave={onMouseLeave} className={styles.navigationWrapper}>
 					<nav className={styles.navigationItems}>
 						<button {...handleNavOptionInteraction('Dashboard')}>
@@ -135,14 +140,24 @@ const Header = () => {
 					/>
 				</div>
 			}
-			{!signedIn &&
+			{!isSignedIn &&
 				<div className={styles.authButtonsWrapper}>
-					<Button text={textConstants.buttons.signUp[1]} type='signup' />
 					{!isAuthDialogOpen &&
-						<Button text={textConstants.buttons.login[1]} type='login' layoutId='loginLayout' showDialog={handleShowAuthDialog} />
+						<>
+							<Button text={textConstants.buttons.signUp[1]} type='signup' layoutId='signupLayout' showDialog={() => handleShowAuthDialog('signup')} />
+							<Button text={textConstants.buttons.login[1]} type='login' layoutId='loginLayout' showDialog={() => handleShowAuthDialog('login')} />
+						</>
 					}
 					{isAuthDialogOpen &&
-						<AuthDialog type='login' layoudId='loginLayout' isOpen={isAuthDialogOpen}  showDialog={handleShowAuthDialog} />
+						<>
+							{activeAuthType === 'login' &&
+								<Button text={textConstants.buttons.signUp[1]} type='signup' layoutId='signupLayout' showDialog={() => handleShowAuthDialog('signup')} />
+							}
+							{activeAuthType === 'signup' &&
+								<Button text={textConstants.buttons.login[1]} type='login' layoutId='loginLayout' showDialog={() => handleShowAuthDialog('login')} />
+							}
+							<AuthDialog type={activeAuthType} layoutId={`${activeAuthType}Layout`} isOpen={isAuthDialogOpen} showDialog={() => handleShowAuthDialog(undefined)} />
+						</>
 					}
 				</div>
 			}

@@ -1,4 +1,4 @@
-import { useState, useEffect,useLayoutEffect, useRef } from "react";
+import { useState, useEffect, useLayoutEffect, useRef } from "react";
 import { AnimatePresence, motion, useMotionValue } from 'framer-motion'
 import styles from './styles.module.css'
 
@@ -28,7 +28,7 @@ const MenuContainer = ({ selectedNavOption, selectedNavOptionPosition }: MenuCon
 			setIsFirstInteraction(true)
 	}, [selectedNavOption])
 
-    useLayoutEffect(() => {
+	useLayoutEffect(() => {
 		if (!selectedNavOption)
 			return
 
@@ -60,7 +60,7 @@ const MenuContainer = ({ selectedNavOption, selectedNavOptionPosition }: MenuCon
 		containerHeight.set(height)
 	}, [selectedNavOption, containerWidth, containerHeight])
 
-    const cardProps = {
+	const cardProps = {
 		className: styles.card,
 		initial: { opacity: 0, x: isFirstInteraction ? 0 : -60 },
 		animate: { opacity: 1, x: 0 },
@@ -68,45 +68,45 @@ const MenuContainer = ({ selectedNavOption, selectedNavOptionPosition }: MenuCon
 		transition: { type: 'spring', stiffness: 80, damping: 14 }
 	}
 
-    return(
-        <AnimatePresence mode="wait">
-        {selectedNavOption !== null && (
-            <motion.div
-                className={styles.menuWrapper}
-                style={{ originX: 0.5, originY: 0, transformPerspective: 1000, height: window.innerHeight }}
-                initial={{ opacity: 0, rotateX: -13 }}
-                animate={{ opacity: 1, rotateX: 0 }}
-                exit={{ opacity: 0, rotateX: -13 }}
-                transition={{ duration: 0.15, ease: 'linear' }}
-            >
-                <motion.div
-                    className={styles.menuBody}
-                    style={{
-                        width: containerWidth,
-                        height: containerHeight,
-                        transition: isFirstInteraction ? '0' : '0.3s'
-                    }}
-                >
-                    <div
-                        className={styles.arrow}
-                        style={{ left: selectedNavOptionPosition.x - 6 }}  /* [6 -> half of arrow width] */
-                    />
+	return (
+		<AnimatePresence mode="wait">
+			{selectedNavOption !== null && (
+				<motion.div
+					className={styles.menuWrapper}
+					style={{ originX: 0.5, originY: 0, transformPerspective: 1000, height: window.innerHeight }}
+					initial={{ opacity: 0, rotateX: -13 }}
+					animate={{ opacity: 1, rotateX: 0 }}
+					exit={{ opacity: 0, rotateX: -13 }}
+					transition={{ duration: 0.15, ease: 'linear' }}
+				>
+					<motion.div
+						className={styles.menuBody}
+						style={{
+							width: containerWidth,
+							height: containerHeight,
+							transition: isFirstInteraction ? '0' : '0.3s'
+						}}
+					>
+						<div
+							className={styles.arrow}
+							style={{ left: selectedNavOptionPosition.x - 6 }}  /* [6 -> half of arrow width] */
+						/>
 
-                    <div className={styles.menuContent}>
-                        <AnimatePresence mode="wait">
-                            {selectedNavOption === 'Deployments' && (
-                                <motion.div {...cardProps}>
-                                    <DeploymentsCard ref={deployments}/>
-                                </motion.div>
-                            )}
-                        </AnimatePresence>
-                    </div>
+						<div className={styles.menuContent}>
+							<AnimatePresence mode="wait">
+								{selectedNavOption === 'Deployments' && (
+									<motion.div {...cardProps}>
+										<DeploymentsCard ref={deployments} />
+									</motion.div>
+								)}
+							</AnimatePresence>
+						</div>
 
-                </motion.div>
-            </motion.div>
-        )}
-    </AnimatePresence>
-    )
+					</motion.div>
+				</motion.div>
+			)}
+		</AnimatePresence>
+	)
 }
 
 export default MenuContainer
