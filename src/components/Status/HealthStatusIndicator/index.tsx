@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { HealthStatusIndicatorProps } from '../../../types';
 
 import styles from './styles.module.css';
-import gauge from '../../assets/gauge.webp';
+import gauge from '../../../assets/gauge.webp';
 
 const lowA = 0;
 const highA = 100;
