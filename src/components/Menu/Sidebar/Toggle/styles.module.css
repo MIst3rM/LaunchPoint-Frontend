@@ -2,9 +2,69 @@
     outline: none;
     border: none;
     user-select: none;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
+    .sidebarButton {
+        outline: none;
+        border: none;
+        user-select: none;
+        cursor: pointer;
+        position: absolute;
+        top: 18px;
+        right: 15px;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: transparent;
+    }
+    ```
+    
+    If you need to support older browsers and decide to keep the vendor-prefixed properties, you can disable the Stylelint check for those lines:
+    
+    ```suggestion
+    .sidebarButton {
+        outline: none;
+        border: none;
+        /* stylelint-disable-next-line property-no-vendor-prefix */
+        user-select: none;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        cursor: pointer;
+        position: absolute;
+        top: 18px;
+        right: 15px;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: transparent;
+    }
+    .sidebarButton {
+        outline: none;
+        border: none;
+        user-select: none;
+        cursor: pointer;
+        position: absolute;
+        top: 18px;
+        right: 15px;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: transparent;
+    }
+    .sidebarButton {
+        outline: none;
+        border: none;
+        user-select: none;
+        -webkit-user-select: none; /* Consider if you need to support older versions of Safari */
+        -moz-user-select: none;    /* Consider if you need to support older versions of Firefox */
+        cursor: pointer;
+        position: absolute;
+        top: 18px;
+        right: 15px;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: transparent;
+    }
     cursor: pointer;
     position: absolute;
     top: 18px;
