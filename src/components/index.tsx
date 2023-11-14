@@ -13,6 +13,5 @@ import MenuToggle from "./Menu/Sidebar/Toggle";
 import Sidebar from "./Menu/Sidebar";
 import HealthStatusIndicator from "./Status/HealthStatusIndicator";
 import OnlineStatusIndicator from "./Status/OnlineStatusIndicator";
-import Ticker from "./Ticker";
 
-export { Button, DoughnutChart, Content, Overlay, Section, Counter, AuthDialog, Header, Hero, DeploymentsCard, MenuContainer, MenuToggle, Sidebar, HealthStatusIndicator, OnlineStatusIndicator, Ticker };
+export { Button, DoughnutChart, Content, Overlay, Section, Counter, AuthDialog, Header, Hero, DeploymentsCard, MenuContainer, MenuToggle, Sidebar, HealthStatusIndicator, OnlineStatusIndicator };
