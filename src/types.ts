@@ -40,6 +40,7 @@ export interface CounterProps{
 
 export interface HealthStatusIndicatorProps {
     healthPercentage: number;
+    isSidebarOpen: boolean;
 }
 
 export type ButtonType = 'login' | 'signup' | 'edit' | 'delete';
@@ -49,3 +50,5 @@ export type AuthDialogType = 'login' | 'signup';
 export type NavOption = 'Dashboard' | 'Deployments' | 'Live View'
 
 export type MotionDivProps = React.ComponentProps<typeof motion.div>;
+
+export type RepeatType = "loop" | "reverse" | "mirror";

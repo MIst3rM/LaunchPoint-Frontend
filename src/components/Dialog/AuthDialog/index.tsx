@@ -5,11 +5,17 @@ import { AuthDialogProps } from '../../../types'
 import Overlay from '../../Container/Overlay'
 import { Client, Account, ID } from "appwrite";
 
-const client = new Client()
-    .setEndpoint(import.meta.env.VITE_APPWRITE_ENDPOINT)
-    .setProject(import.meta.env.VITE_APPWRITE_PROJECT);
+let client: Client;
+let account: Account;
 
-const account = new Account(client);
+try {
+    client = new Client()
+        .setEndpoint(import.meta.env.VITE_APPWRITE_ENDPOINT)
+        .setProject(import.meta.env.VITE_APPWRITE_PROJECT);
+    account = new Account(client);
+} catch (error) {
+    console.error('Something went wrong.', error);
+}
 
 const AuthDialog = ({ type, layoutId, isOpen, showDialog }: AuthDialogProps) => {
     const [email, setEmail] = useState('');
