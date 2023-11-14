@@ -6,8 +6,8 @@ export interface ContainerProps {
 }
 
 export interface CustomProps {
-  classes?: string | string[];
-  effects?: Partial<MotionDivProps>;
+    classes?: string | string[];
+    effects?: Partial<MotionDivProps>;
 }
 
 export interface HeroProps {
@@ -34,13 +34,18 @@ export interface OverlayProps {
     isOpen: boolean
 }
 
-export interface CounterProps{
+export interface CounterProps {
     targetDigits: Array<number>
 }
 
 export interface HealthStatusIndicatorProps {
     healthPercentage: number;
     isSidebarOpen: boolean;
+}
+
+export interface MenuContainerProps {
+    selectedNavOption: NavOption;
+    selectedNavOptionPosition: { x: number }
 }
 
 export type ButtonType = 'login' | 'signup' | 'edit' | 'delete';

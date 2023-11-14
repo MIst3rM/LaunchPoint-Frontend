@@ -3,11 +3,7 @@ import { AnimatePresence, motion, useMotionValue } from 'framer-motion'
 import styles from './styles.module.css'
 
 import DeploymentsCard from "../Cards/Deployments";
-
-interface MenuContainerProps {
-	selectedNavOption: 'Dashboard' | 'Deployments' | 'Live View' | null
-	selectedNavOptionPosition: { x: number }
-}
+import { MenuContainerProps } from "../../../types";
 
 const MenuContainer = ({ selectedNavOption, selectedNavOptionPosition }: MenuContainerProps) => {
 
@@ -109,4 +105,4 @@ const MenuContainer = ({ selectedNavOption, selectedNavOptionPosition }: MenuCon
 	)
 }
 
-export default MenuContainer
+export default MenuContainer;
