@@ -23,6 +23,8 @@ const Root = () => {
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
+  const [isPlaying, setIsPlaying] = useState(true)
+
   const sectionHoverEffect = {
     whileHover: {
       scale: 1.02,
@@ -50,6 +52,8 @@ const Root = () => {
       }
     }
   }
+
+  const colors = ['#632bf3', '#f122c8', '#f16022', '#9ef344', '#44d3f3'];
 
   return (
     <>
@@ -106,6 +110,30 @@ const Root = () => {
                   isSidebarOpen={isSidebarOpen}
                 />
               </Section>
+            </Section>
+            <Section customProps={{
+              classes: [styles.row]
+            }}>
+              <Ticker
+                duration={10}
+                onMouseEnter={() => setIsPlaying(false)}
+                onMouseLeave={() => setIsPlaying(true)}
+                isPlaying={isPlaying}
+              >
+                {colors.map((item, index) => (
+                  <div
+                    key={index}
+                    style={{
+                      backgroundColor: item,
+                      margin: '5px',
+                      height: '250px',
+                      width: '200px',
+                      borderRadius: '15px',
+                      cursor: 'pointer'
+                    }}
+                  />
+                ))}
+              </Ticker>
             </Section>
           </Section>
         </Content>

@@ -48,12 +48,23 @@ export interface MenuContainerProps {
     selectedNavOptionPosition: { x: number }
 }
 
+export interface TickerProps {
+    children: JSX.Element[];
+    duration?: number;
+    onMouseEnter?: () => void;
+    onMouseLeave?: () => void;
+    isPlaying?: boolean;
+    direction?: tickerDirection;
+}
+
 export type ButtonType = 'login' | 'signup' | 'edit' | 'delete';
 
 export type AuthDialogType = 'login' | 'signup';
 
-export type NavOption = 'Dashboard' | 'Deployments' | 'Live View'
+export type NavOption = 'Dashboard' | 'Deployments' | 'Live View' | null;
 
 export type MotionDivProps = React.ComponentProps<typeof motion.div>;
 
 export type RepeatType = "loop" | "reverse" | "mirror";
+
+export type tickerDirection = 1 | -1;
