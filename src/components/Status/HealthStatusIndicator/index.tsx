@@ -11,7 +11,25 @@ const highA = 100;
 const lowB = 48;
 const highB = -227;
 
-const HealthStatusIndicator = ({ healthPercentage }: HealthStatusIndicatorProps) => {
+const sidebarVariants = {
+    open: {
+        x: -250,
+        transition: {
+            duration: 0.5,
+            ease: 'easeInOut'
+        }
+    },
+    closed: {
+        x: 0,
+        transition: {
+            delay: 0.5,
+            duration: 0.5,
+            ease: 'easeInOut'
+        }
+    }
+}
+
+const HealthStatusIndicator = ({ healthPercentage, isSidebarOpen }: HealthStatusIndicatorProps) => {
     const [angle, setAngle] = useState(-90);
 
     useEffect(() => {
@@ -21,7 +39,12 @@ const HealthStatusIndicator = ({ healthPercentage }: HealthStatusIndicatorProps)
     }, [healthPercentage]);
 
     return (
-        <div className={styles.gaugeContainer}>
+        <motion.div
+            className={styles.gaugeContainer}
+            variants={sidebarVariants}
+            initial={false}
+            animate={isSidebarOpen ? 'open' : 'closed'}
+        >
             <div className={styles.gaugeCircle} />
             <div className={styles.gaugeBackgroundImageWrapper}>
                 <img
@@ -45,7 +68,7 @@ const HealthStatusIndicator = ({ healthPercentage }: HealthStatusIndicatorProps)
                 />
                 <div className={styles.tickerDot} />
             </div>
-        </div>
+        </motion.div>
     );
 };
 
