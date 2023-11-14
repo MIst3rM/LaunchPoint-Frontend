@@ -97,7 +97,7 @@ const Root = () => {
 
               <Section
                 customProps={{
-                  classes: [styles.table],
+                  classes: [styles.systemHealth],
                   effects: sectionHoverEffect
                 }}>
                 <Sidebar openSidebar={setIsSidebarOpen} />
