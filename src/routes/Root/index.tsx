@@ -1,16 +1,9 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import Content from "../../components/Container/Content";
-import Section from "../../components/Container/Section";
-import Counter from "../../components/Counter";
-import Header from "../../components/Header";
-import Hero from "../../components/Hero";
+import { Content, Section, Counter, Header, Hero, HealthStatusIndicator, OnlineStatusIndicator, Sidebar, Ticker } from "../../components";
 import textConstants from "../../textConstants";
 
 import styles from "./styles.module.css";
-import HealthStatusIndicator from "../../components/Status/HealthStatusIndicator";
-import OnlineStatusIndicator from "../../components/Status/OnlineStatusIndicator";
-import Sidebar from "../../components/Menu/Sidebar";
 
 const Root = () => {
   //TODO: Replace this with a proper authentication check
