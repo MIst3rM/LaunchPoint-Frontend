@@ -10,6 +10,12 @@ export interface CustomProps {
     effects?: Partial<MotionDivProps>;
 }
 
+export interface SidebarProps {
+    openSidebar: (isOpen: boolean) => void;
+    navClasses?: string | string[];
+    backgroundClasses?: string | string[];
+}
+
 export interface HeroProps {
     title: string;
     subtitle: string;
