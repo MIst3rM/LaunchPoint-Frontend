@@ -115,7 +115,7 @@ const Root = () => {
               classes: [styles.row]
             }}>
               <Ticker
-                duration={10}
+                duration={20}
                 onMouseEnter={() => setIsPlaying(false)}
                 onMouseLeave={() => setIsPlaying(true)}
                 isPlaying={isPlaying}

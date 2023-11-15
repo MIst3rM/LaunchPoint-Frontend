@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { useAnimate, useInView } from 'framer-motion';
+import { useAnimate, useInView, motion } from 'framer-motion';
 import { v4 as uuidv4 } from 'uuid';
 import { TickerProps } from '../../types';
 
@@ -38,11 +38,40 @@ const Ticker = ({
         }
     }, [tickerContentWidth]);
 
+    // useEffect(() => {
+    //     if (isInView && tickerRef.current && tickerContentWidth && !animationInstance.current) {
+    //         animationInstance.current = animate(scope.current, { x: tickerContentWidth * direction }, { ease: 'linear', duration, repeat: Infinity });
+    //     }
+    // }, [isInView, tickerContentWidth, duration, direction, animate, scope]);
+
     useEffect(() => {
-        if (isInView && tickerRef.current && tickerContentWidth && !animationInstance.current) {
-            animationInstance.current = animate(scope.current, { x: tickerContentWidth * direction }, { ease: 'linear', duration, repeat: Infinity });
+        if (isInView && tickerRef.current && tickerContentWidth) {
+            // Calculate the total width of the duplicates
+            const dupesTotalWidth = tickerContentWidth * numDupes;
+
+            // The initial X position should offset by the width of the duplicates when direction is right
+            // so that the original children appear first. If the direction is left, the initial X can be 0.
+            const initialX = direction === 1 ? -dupesTotalWidth : 100;
+
+            // The animation target X position should move the content to show all children and duplicates
+            const animateToX = direction === 1 ? dupesTotalWidth : -dupesTotalWidth;
+
+            console.log({ initialX, animateToX })
+
+            animationInstance.current = animate(scope.current, { x: [initialX, animateToX] }, {
+                ease: 'linear',
+                duration,
+                repeat: Infinity
+            });
+
+            //Pause immediately if not playing
+            if (!isPlaying) {
+                animationInstance.current.pause();
+            }
         }
     }, [isInView, tickerContentWidth, duration, direction, animate, scope]);
+
+
 
     useEffect(() => {
         if (animationInstance.current) {
@@ -55,26 +84,42 @@ const Ticker = ({
     }, [isPlaying]);
 
     return (
-        <div
+        <motion.div
             className={styles.tickerContainer}
             ref={tickerRef}
             onMouseEnter={onMouseEnter}
             onMouseLeave={onMouseLeave}
         >
-            <div
+            <motion.div
                 ref={scope}
                 className={styles.tickerContainerContents}
             >
+
+                {
+                    direction === 1 &&
+                    [...Array(numDupes)].map((_, i) =>
+                        children.map((item, index) => (
+                            <div key={`left-dup-${i}_${index}`}>{item}</div>
+                        ))
+                    )
+                }
+
                 {children.map((item, index) => (
-                    <div key={`${tickerUUID}_${index}`} id={`${tickerUUID}_${index}`}>
+                    <div key={`original-${index}`} id={`${tickerUUID}_${index}`}>
                         {item}
                     </div>
                 ))}
-                {[...Array(numDupes)].map((_, i) =>
-                    children.map((item, index) => <div key={`${i}_${index}`}>{item}</div>)
-                )}
-            </div>
-        </div>
+
+                {
+                    direction === -1 &&
+                    [...Array(numDupes)].map((_, i) =>
+                        children.map((item, index) => (
+                            <div key={`right-dup-${i}_${index}`}>{item}</div>
+                        ))
+                    )
+                }
+            </motion.div>
+        </motion.div>
     );
 };
 
