@@ -1,9 +1,40 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Content, Section, Counter, Header, Hero, HealthStatusIndicator, OnlineStatusIndicator, Sidebar, Ticker } from "../../components";
 import textConstants from "../../textConstants";
 
 import styles from "./styles.module.css";
+import DownArrow from "../../components/Arrow/DownArrow";
+
+const colors = ['#632bf3', '#b700ff', '#f16022', '#9ef344', '#44d3f3'];
+
+const sectionHoverEffect = {
+  whileHover: {
+    scale: 1.02,
+    transition: {
+      duration: 0.5,
+      ease: 'linear'
+    }
+  },
+}
+
+const sidebarVariants = {
+  open: {
+    x: -250,
+    transition: {
+      duration: 0.5,
+      ease: 'easeInOut'
+    }
+  },
+  closed: {
+    x: 0,
+    transition: {
+      delay: 0.5,
+      duration: 0.5,
+      ease: 'easeInOut'
+    }
+  }
+}
 
 const Root = () => {
   //TODO: Replace this with a proper authentication check
@@ -25,35 +56,40 @@ const Root = () => {
 
   const [isPlaying, setIsPlaying] = useState(true)
 
-  const sectionHoverEffect = {
-    whileHover: {
-      scale: 1.02,
-      transition: {
-        duration: 0.5,
-        ease: 'linear'
-      }
-    },
+  const [isTickerSectionExpanded, setIsTickerSectionExpanded] = useState(false);
+
+  const [cardsContainerHeight, setCardsContainerHeight] = useState("");
+  const expandedHeight = "1000px";
+
+  const sectionExpandEffect = {
+    animate: { height: cardsContainerHeight },
+    transition: { duration: 0.5 }
   }
 
-  const sidebarVariants = {
-    open: {
-      x: -250,
-      transition: {
-        duration: 0.5,
-        ease: 'easeInOut'
-      }
-    },
-    closed: {
-      x: 0,
-      transition: {
-        delay: 0.5,
-        duration: 0.5,
-        ease: 'easeInOut'
-      }
+  const handleArrowClick = () => {
+    setIsTickerSectionExpanded(!isTickerSectionExpanded)
+  }
+
+  useEffect(() => {
+    if (isTickerSectionExpanded) {
+      setCardsContainerHeight(expandedHeight);
+    } else {
+      setCardsContainerHeight("");
     }
-  }
+  }, [isTickerSectionExpanded]);
 
-  const colors = ['#632bf3', '#f122c8', '#f16022', '#9ef344', '#44d3f3'];
+  const tickerSlots = colors.map((item, index) => (
+    <div
+      key={index}
+      style={{
+        width: '200px',
+        height: '250px',
+        backgroundColor: item,
+        borderRadius: '15px',
+        cursor: 'pointer'
+      }}
+    />
+  ));
 
   return (
     <>
@@ -114,26 +150,23 @@ const Root = () => {
             <Section customProps={{
               classes: [styles.row]
             }}>
-              <Ticker
-                duration={20}
-                onMouseEnter={() => setIsPlaying(false)}
-                onMouseLeave={() => setIsPlaying(true)}
-                isPlaying={isPlaying}
+              <Section
+                customProps={{
+                  classes: [styles.cardsContainer],
+                  effects: sectionExpandEffect,
+                }}
               >
-                {colors.map((item, index) => (
-                  <div
-                    key={index}
-                    style={{
-                      backgroundColor: item,
-                      margin: '5px',
-                      height: '250px',
-                      width: '200px',
-                      borderRadius: '15px',
-                      cursor: 'pointer'
-                    }}
-                  />
-                ))}
-              </Ticker>
+                <Ticker
+                  slots={tickerSlots}
+                  gap={24}
+                  padding={10}
+                  direction={"right"}
+                  speed={100}
+                  hoverFactor={0.5}
+                  alignment={"center"}
+                />
+                <DownArrow isExpanded={isTickerSectionExpanded} handleClick={handleArrowClick} />
+              </Section>
             </Section>
           </Section>
         </Content>

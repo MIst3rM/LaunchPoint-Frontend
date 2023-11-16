@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { CSSProperties, ReactElement } from 'react';
 
 export interface ContainerProps {
     children: React.ReactNode;
@@ -48,13 +49,42 @@ export interface MenuContainerProps {
     selectedNavOptionPosition: { x: number }
 }
 
+export interface DownArrowProps {
+    classes?: string | string[];
+    handleClick: () => void;
+    isExpanded: boolean;
+}
+
+interface FadeOptions {
+    fadeContent: boolean;
+    overflow: false;
+    fadeWidth: number;
+    fadeAlpha: number;
+    fadeInset: number;
+}
+
+interface TransitionControl {
+    type: string;
+    ease: string;
+    duration: number;
+}
+
 export interface TickerProps {
-    children: JSX.Element[];
-    duration?: number;
-    onMouseEnter?: () => void;
-    onMouseLeave?: () => void;
-    isPlaying?: boolean;
-    direction?: tickerDirection;
+    slots: ReactElement[];
+    gap: number;
+    padding: number;
+    paddingPerSide?: boolean;
+    paddingTop?: number;
+    paddingRight?: number;
+    paddingBottom?: number;
+    paddingLeft?: number;
+    speed?: number;
+    hoverFactor?: number;
+    direction?: string | boolean;
+    alignment?: string;
+    fadeOptions?: FadeOptions;
+    transitionControl?: TransitionControl;
+    style?: CSSProperties;
 }
 
 export type ButtonType = 'login' | 'signup' | 'edit' | 'delete';
