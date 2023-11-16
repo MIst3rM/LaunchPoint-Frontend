@@ -87,6 +87,12 @@ export interface TickerProps {
     style?: CSSProperties;
 }
 
+export interface TickerCardProps {
+    id: string;
+    style?: CSSProperties;
+    data?: { [key: string]: any };
+}
+
 export type ButtonType = 'login' | 'signup' | 'edit' | 'delete';
 
 export type AuthDialogType = 'login' | 'signup';

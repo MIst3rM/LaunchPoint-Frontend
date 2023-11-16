@@ -1,4 +1,4 @@
-import type { CSSProperties, ReactNode, RefObject, JSX, ReactElement } from 'react'
+import type { CSSProperties, ReactNode, RefObject, JSX } from 'react'
 import { Children, useLayoutEffect, useEffect, useRef, useMemo, createRef, useState, useCallback, cloneElement } from 'react'
 import { resize } from '@motionone/dom'
 import { useAnimationFrame, useReducedMotion, LayoutGroup } from 'framer-motion'
@@ -9,7 +9,7 @@ import { TickerProps } from '../../types'
 const containerStyle = {
     display: 'flex',
     width: '100%',
-    height: '100%',
+    height: 'auto',
     maxWidth: '100%',
     maxHeight: '100%',
     placeItems: 'center',
@@ -49,7 +49,6 @@ const Ticker = ({
     style,
     slots
 }: TickerProps) => {
-
     const {
         fadeContent,
         overflow,
@@ -81,7 +80,7 @@ const Ticker = ({
     let clonedChildren: ReactNode[] | JSX.Element[]
     let dupedChildren: ReactNode[] | JSX.Element[] = []
 
-    /* Duplicate value */
+    // /* Duplicate value */
     let duplicateBy = 0
     let opacity = 0
 
@@ -97,6 +96,7 @@ const Ticker = ({
             const start = childrenRef[0].current ? isHorizontal ? childrenRef[0].current.offsetLeft : childrenRef[0].current.offsetTop : 0
             const end = childrenRef[1].current ? isHorizontal ? childrenRef[1].current.offsetLeft + childrenRef[1].current.offsetWidth : childrenRef[1].current.offsetTop + childrenRef[1].current.offsetHeight : 0
             const childrenLength = end - start + gap
+            console.log(parentLength, childrenLength)
             setSize({
                 parent: parentLength,
                 children: childrenLength
@@ -152,8 +152,6 @@ const Ticker = ({
                         ref: selectedRef,
                         style: {
                             ...(child.props?.style),
-                            // width: widthType ? child.props?.width : '100%',
-                            // height: heightType ? child.props?.height : '100%',
                             flexShrink: 0,
                         },
                     }, child.props?.children)}
@@ -173,8 +171,6 @@ const Ticker = ({
                             {cloneElement(child, {
                                 style: {
                                     ...child.props.style,
-                                    // width: widthType ? child.props.width : '100%',
-                                    // height: heightType ? child.props.height : '100%',
                                     flexShrink: 0
                                 }
                             }, child.props.children)}

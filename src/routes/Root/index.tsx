@@ -1,12 +1,9 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Content, Section, Counter, Header, Hero, HealthStatusIndicator, OnlineStatusIndicator, Sidebar, Ticker } from "../../components";
+import { Content, Section, Counter, Header, Hero, HealthStatusIndicator, OnlineStatusIndicator, Sidebar, Ticker, DownArrow, TickerCard } from "../../components";
 import textConstants from "../../textConstants";
 
 import styles from "./styles.module.css";
-import DownArrow from "../../components/Arrow/DownArrow";
-
-const colors = ['#632bf3', '#b700ff', '#f16022', '#9ef344', '#44d3f3'];
 
 const sectionHoverEffect = {
   whileHover: {
@@ -78,18 +75,23 @@ const Root = () => {
     }
   }, [isTickerSectionExpanded]);
 
-  const tickerSlots = colors.map((item, index) => (
-    <div
-      key={index}
-      style={{
-        width: '200px',
-        height: '250px',
-        backgroundColor: item,
-        borderRadius: '15px',
-        cursor: 'pointer'
-      }}
-    />
-  ));
+
+  const tickerSlots = Array.from({ length: 5 }).map((_, index) => {
+
+    const tickerCardStyle = {
+      width: "300px",
+      height: "350px",
+      borderRadius: "15px",
+      backgroundColor: "rgb(44, 50, 60)",
+    };
+
+    return (
+      <TickerCard
+        key={index}
+        id={`${index + 1}`}
+        style={tickerCardStyle} />
+    )
+  });
 
   return (
     <>
@@ -156,12 +158,16 @@ const Root = () => {
                   effects: sectionExpandEffect,
                 }}
               >
+                <h1
+                  className={styles.cardsContainerHeader}>
+                  {textConstants.dashboardOverviewPage.stations}
+                </h1>
                 <Ticker
                   slots={tickerSlots}
                   gap={24}
                   padding={10}
                   direction={"right"}
-                  speed={100}
+                  speed={0}
                   hoverFactor={0.5}
                   alignment={"center"}
                 />
