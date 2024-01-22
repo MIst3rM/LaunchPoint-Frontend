@@ -45,3 +45,12 @@
 
     will-change: transform;
 }
+
+.cardsContainer {
+    width: 100%;
+    height: 600px;
+}
+
+.cardsContainerHeader{
+    align-self: center;
+}

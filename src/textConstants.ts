@@ -21,6 +21,7 @@ const textConstants = {
     total_stations: "Total Stations",
     active_stations: "Active Stations",
     system_health: "System Health",
+    stations: "Stations",
   },
   navBarOptions: {
     option1: "Dashboard",
