@@ -1,16 +1,37 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import Content from "../../components/Container/Content";
-import Section from "../../components/Container/Section";
-import Counter from "../../components/Counter";
-import Header from "../../components/Header";
-import Hero from "../../components/Hero";
+import { Content, Section, Counter, Header, Hero, HealthStatusIndicator, OnlineStatusIndicator, Sidebar, Ticker, DownArrow, TickerCard } from "../../components";
 import textConstants from "../../textConstants";
 
 import styles from "./styles.module.css";
-import HealthStatusIndicator from "../../components/Status/HealthStatusIndicator";
-import OnlineStatusIndicator from "../../components/Status/OnlineStatusIndicator";
-import Sidebar from "../../components/Menu/Sidebar";
+
+const sectionHoverEffect = {
+  whileHover: {
+    scale: 1.02,
+    transition: {
+      duration: 0.5,
+      ease: 'linear'
+    }
+  },
+}
+
+const sidebarVariants = {
+  open: {
+    x: -250,
+    transition: {
+      duration: 0.5,
+      ease: 'easeInOut'
+    }
+  },
+  closed: {
+    x: 0,
+    transition: {
+      delay: 0.5,
+      duration: 0.5,
+      ease: 'easeInOut'
+    }
+  }
+}
 
 const Root = () => {
   //TODO: Replace this with a proper authentication check
@@ -30,33 +51,47 @@ const Root = () => {
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  const sectionHoverEffect = {
-    whileHover: {
-      scale: 1.02,
-      transition: {
-        duration: 0.5,
-        ease: 'linear'
-      }
-    },
+  const [isPlaying, setIsPlaying] = useState(true)
+
+  const [isTickerSectionExpanded, setIsTickerSectionExpanded] = useState(false);
+
+  const [cardsContainerHeight, setCardsContainerHeight] = useState("");
+  const expandedHeight = "1000px";
+
+  const sectionExpandEffect = {
+    animate: { height: cardsContainerHeight },
+    transition: { duration: 0.5 }
   }
 
-  const sidebarVariants = {
-    open: {
-      x: -250,
-      transition: {
-        duration: 0.5,
-        ease: 'easeInOut'
-      }
-    },
-    closed: {
-      x: 0,
-      transition: {
-        delay: 0.5,
-        duration: 0.5,
-        ease: 'easeInOut'
-      }
-    }
+  const handleArrowClick = () => {
+    setIsTickerSectionExpanded(!isTickerSectionExpanded)
   }
+
+  useEffect(() => {
+    if (isTickerSectionExpanded) {
+      setCardsContainerHeight(expandedHeight);
+    } else {
+      setCardsContainerHeight("");
+    }
+  }, [isTickerSectionExpanded]);
+
+
+  const tickerSlots = Array.from({ length: 5 }).map((_, index) => {
+
+    const tickerCardStyle = {
+      width: "300px",
+      height: "350px",
+      borderRadius: "15px",
+      backgroundColor: "rgb(44, 50, 60)",
+    };
+
+    return (
+      <TickerCard
+        key={index}
+        id={`${index + 1}`}
+        style={tickerCardStyle} />
+    )
+  });
 
   return (
     <>
@@ -97,7 +132,7 @@ const Root = () => {
 
               <Section
                 customProps={{
-                  classes: [styles.table],
+                  classes: [styles.systemHealth],
                   effects: sectionHoverEffect
                 }}>
                 <Sidebar openSidebar={setIsSidebarOpen} />
@@ -112,6 +147,31 @@ const Root = () => {
                   healthPercentage={systemHealth}
                   isSidebarOpen={isSidebarOpen}
                 />
+              </Section>
+            </Section>
+            <Section customProps={{
+              classes: [styles.row]
+            }}>
+              <Section
+                customProps={{
+                  classes: [styles.cardsContainer],
+                  effects: sectionExpandEffect,
+                }}
+              >
+                <h1
+                  className={styles.cardsContainerHeader}>
+                  {textConstants.dashboardOverviewPage.stations}
+                </h1>
+                <Ticker
+                  slots={tickerSlots}
+                  gap={24}
+                  padding={10}
+                  direction={"left"}
+                  speed={100}
+                  hoverFactor={0.5}
+                  alignment={"center"}
+                />
+                <DownArrow isExpanded={isTickerSectionExpanded} handleClick={handleArrowClick} />
               </Section>
             </Section>
           </Section>

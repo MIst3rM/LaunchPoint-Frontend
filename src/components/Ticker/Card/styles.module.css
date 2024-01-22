@@ -1,0 +1,15 @@
+.tickerCardContainer {
+    position: relative;
+}
+
+.id {
+    font-size: large;
+    font-weight: 700;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+}
