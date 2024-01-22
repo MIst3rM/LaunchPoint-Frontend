@@ -1,7 +1,7 @@
 import type { CSSProperties, ReactNode, RefObject, JSX } from 'react'
 import { Children, useLayoutEffect, useEffect, useRef, useMemo, createRef, useState, useCallback, cloneElement } from 'react'
 import { resize } from '@motionone/dom'
-import { useAnimationFrame, useReducedMotion, LayoutGroup } from 'framer-motion'
+import { useAnimationFrame, useReducedMotion, LayoutGroup, motion } from 'framer-motion'
 import { wrap } from 'popmotion'
 import { TickerProps } from '../../types'
 
@@ -256,7 +256,7 @@ const Ticker = ({
                 overflow: overflow ? 'visible' : 'hidden',
             } as CSSProperties}
         >
-            <ul
+            <motion.ul
                 ref={transformRef}
                 style={{
                     ...containerStyle,
@@ -268,12 +268,14 @@ const Ticker = ({
                     flexDirection: isHorizontal ? 'row' : 'column',
                     ...style,
                 }}
-                onMouseEnter={() => (isHover.current = true)}
-                onMouseLeave={() => (isHover.current = false)}
+                onHoverStart={() => (isHover.current = true)}
+                onHoverEnd={() => (isHover.current = false)}
+                // onMouseEnter={() => (isHover.current = true)}
+                // onMouseLeave={() => (isHover.current = false)}
             >
                 {clonedChildren}
                 {dupedChildren}
-            </ul>
+            </motion.ul>
         </section>
     )
 };

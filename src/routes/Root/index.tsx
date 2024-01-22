@@ -166,8 +166,8 @@ const Root = () => {
                   slots={tickerSlots}
                   gap={24}
                   padding={10}
-                  direction={"right"}
-                  speed={0}
+                  direction={"left"}
+                  speed={100}
                   hoverFactor={0.5}
                   alignment={"center"}
                 />

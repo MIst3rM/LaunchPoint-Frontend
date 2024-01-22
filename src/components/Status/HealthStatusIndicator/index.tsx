@@ -30,7 +30,7 @@ const sidebarVariants = {
 }
 
 const HealthStatusIndicator = ({ healthPercentage, isSidebarOpen }: HealthStatusIndicatorProps) => {
-    const [angle, setAngle] = useState(-90);
+    const [angle, setAngle] = useState(0);
 
     useEffect(() => {
         const value = Math.max(lowA, Math.min(healthPercentage, highA));
@@ -59,7 +59,7 @@ const HealthStatusIndicator = ({ healthPercentage, isSidebarOpen }: HealthStatus
                 <div className={styles.ellipse} />
                 <motion.div
                     className={styles.ticker}
-                    initial={{ rotate: -90 }} // Start position for the ticker
+                    initial={{ rotate: 0 }} // Start position for the ticker
                     animate={{ rotate: angle }} // End position for the ticker
                     transition={{ type: 'spring', stiffness: 100, damping: 10 }}
                     style={{
