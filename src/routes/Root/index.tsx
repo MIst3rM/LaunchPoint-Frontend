@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import { motion, useIsPresent } from "framer-motion";
+import { motion, useIsPresent, Reorder } from "framer-motion";
 import { Content, Section, Counter, Header, Hero, HealthStatusIndicator, OnlineStatusIndicator, Sidebar, Ticker, DownArrow, TickerCard } from "../../components";
 import textConstants from "../../textConstants";
 import styles from "./styles.module.css";
-import { useAuth } from "../../providers/auth";
+import { RootRouteProps } from "../../types";
 
 const sectionHoverEffect = {
   whileHover: {
@@ -33,9 +33,7 @@ const sidebarVariants = {
   }
 }
 
-const Root = () => {
-  const { loggedInUser } = useAuth();
-
+const Root = ({ loggedInUser } : RootRouteProps) => {
   const isPresent = useIsPresent();
 
   //TODO: Replace this with a proper API call to get the total number of stations

@@ -1,10 +1,22 @@
 import { motion } from 'framer-motion';
 import { CSSProperties, ReactElement } from 'react';
+import { Models } from "appwrite";
 
 export interface LoginFormValues {
     email: string;
     password: string;
     rememberMe: boolean;
+}
+
+export interface AuthContextType {
+    loggedInUser: Models.User<Models.Preferences> | null;
+    login: (email: string, password: string) => Promise<void>;
+    fetchLoggedInUser: () => Promise<void>;
+    loading: boolean;
+}
+
+export interface RootRouteProps {
+    loggedInUser: Models.User<Models.Preferences> | null;
 }
 
 export interface ContainerProps {

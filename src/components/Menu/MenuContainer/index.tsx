@@ -16,7 +16,6 @@ const MenuContainer = ({ selectedNavOption, selectedNavOptionPosition }: MenuCon
 
 	const [isFirstInteraction, setIsFirstInteraction] = useState(true)
 
-
 	useEffect(() => {
 		if (selectedNavOption !== null)
 			setIsFirstInteraction(false)
@@ -97,7 +96,7 @@ const MenuContainer = ({ selectedNavOption, selectedNavOptionPosition }: MenuCon
 								)}
 							</AnimatePresence>
 						</div>
-
+						
 					</motion.div>
 				</motion.div>
 			)}

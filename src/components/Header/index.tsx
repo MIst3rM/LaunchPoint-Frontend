@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { Link } from 'react-router-dom'
 import styles from './styles.module.css'
 import MenuContainer from '../Menu/MenuContainer'
 import Button from '../Button'
@@ -53,23 +54,25 @@ const Header = () => {
 				if (option1 === null || option1.current === null)
 					return
 				navOptionScreenPosition = option1.current.getBoundingClientRect()
+				setSelectedNavOptionPosition({ x: navOptionScreenPosition.left + navOptionScreenPosition.width / 2 })
+				setSelectedNavOption(navItemId)
 				break
 			case textConstants.navBarOptions.option2:
 				if (option2 === null || option2.current === null)
 					return
 				navOptionScreenPosition = option2.current.getBoundingClientRect()
+				setSelectedNavOptionPosition({ x: navOptionScreenPosition.left + navOptionScreenPosition.width / 2 })
+				setSelectedNavOption(navItemId)
 				break
 			case textConstants.navBarOptions.option3:
 				if (option3 === null || option3.current === null)
 					return
-				navOptionScreenPosition = option3.current.getBoundingClientRect()
+				setSelectedNavOption(null)
+				setSelectedNavOptionPosition({ x: 0 })
 				break
 			default:
 				return
 		}
-
-		setSelectedNavOptionPosition({ x: navOptionScreenPosition.left + navOptionScreenPosition.width / 2 })
-		setSelectedNavOption(navItemId)
 	}
 
 
@@ -119,7 +122,9 @@ const Header = () => {
 						</button>
 
 						<button {...handleNavOptionInteraction('Live View')}>
-							<p ref={option3}>{textConstants.navBarOptions.option3}</p>
+							<Link to="/livemap">
+								<p ref={option3}>{textConstants.navBarOptions.option3}</p>
+							</Link>
 						</button>
 					</nav>
 					<MenuContainer
