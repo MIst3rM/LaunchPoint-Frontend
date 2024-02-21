@@ -1,6 +1,12 @@
 import { motion } from 'framer-motion';
 import { CSSProperties, ReactElement } from 'react';
 
+export interface LoginFormValues {
+    email: string;
+    password: string;
+    rememberMe: boolean;
+}
+
 export interface ContainerProps {
     children: React.ReactNode;
     customProps?: CustomProps;
@@ -27,18 +33,13 @@ export interface ButtonProps {
     text: string
     type: ButtonType
     layoutId?: string
-    showDialog?: (isOpen: boolean) => void;
+    onClick?: () => void;
+    disabled?: boolean;
 }
 
 export interface AuthDialogProps {
-    type: AuthDialogType
+    type?: AuthDialogType
     layoutId?: string
-    isOpen: boolean
-    showDialog?: (isOpen: boolean) => void;
-}
-
-export interface OverlayProps {
-    isOpen: boolean
 }
 
 export interface CounterProps {
@@ -99,7 +100,7 @@ export interface TickerCardProps {
     data?: { [key: string]: any };
 }
 
-export type ButtonType = 'login' | 'signup' | 'edit' | 'delete';
+export type ButtonType = 'login' | 'signup' | 'edit' | 'delete' | 'continue';
 
 export type AuthDialogType = 'login' | 'signup';
 

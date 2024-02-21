@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
+import { motion, useIsPresent } from "framer-motion";
 import { Content, Section, Counter, Header, Hero, HealthStatusIndicator, OnlineStatusIndicator, Sidebar, Ticker, DownArrow, TickerCard } from "../../components";
 import textConstants from "../../textConstants";
-
 import styles from "./styles.module.css";
+import { useAuth } from "../../providers/auth";
 
 const sectionHoverEffect = {
   whileHover: {
@@ -34,8 +34,9 @@ const sidebarVariants = {
 }
 
 const Root = () => {
-  //TODO: Replace this with a proper authentication check
-  const [isSignedIn, setIsSignedIn] = useState(true);
+  const { loggedInUser } = useAuth();
+
+  const isPresent = useIsPresent();
 
   //TODO: Replace this with a proper API call to get the total number of stations
   const [totalStations, setTotalStations] = useState(100);
@@ -50,8 +51,6 @@ const Root = () => {
   const [systemHealth, setSystemHealth] = useState((onlineStations / totalStations) * 100);
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-
-  const [isPlaying, setIsPlaying] = useState(true)
 
   const [isTickerSectionExpanded, setIsTickerSectionExpanded] = useState(false);
 
@@ -96,7 +95,7 @@ const Root = () => {
   return (
     <>
       <Header />
-      {!isSignedIn &&
+      {!loggedInUser &&
         <Content>
           <Section customProps={{
             classes: [styles.signedOut]
@@ -109,7 +108,7 @@ const Root = () => {
           </Section>
         </Content>
       }
-      {isSignedIn &&
+      {loggedInUser &&
         <Content>
           <Section customProps={{
             classes: [styles.signedIn]
@@ -177,6 +176,13 @@ const Root = () => {
           </Section>
         </Content>
       }
+      {/* <motion.div
+      className={styles.privacyScreen}
+        initial={{ scaleX: 1 }}
+        animate={{ scaleX: 0, transition: { duration: 0.5, ease: "circOut" } }}
+        exit={{ scaleX: 1, transition: { duration: 0.5, ease: "circIn" } }}
+        style={{ originX: isPresent ? 0 : 1 }}
+      /> */}
     </>
   );
 };

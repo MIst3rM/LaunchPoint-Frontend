@@ -24,6 +24,18 @@
     background-color: rgba(29, 30, 34, 1);
 }
 
+.buttonLink {
+    text-decoration: none;
+    color: white;
+    width: 100%;
+    text-align: center;
+    padding: 10px 0;
+}
+
+.continueButton {
+    background-color: rgba(29, 30, 34, 1);
+}
+
 .glowEffect {
     --glow-line-color: #059AFF;
     --glow-line-thickness: 1px;

@@ -16,5 +16,6 @@ import OnlineStatusIndicator from "./Status/OnlineStatusIndicator";
 import Ticker from "./Ticker";
 import DownArrow from "./Arrow/DownArrow";
 import TickerCard from "./Ticker/Card";
+import Input from "./Input";
 
-export { Button, DoughnutChart, Content, Overlay, Section, Counter, AuthDialog, Header, Hero, DeploymentsCard, MenuContainer, MenuToggle, Sidebar, HealthStatusIndicator, OnlineStatusIndicator, Ticker, DownArrow, TickerCard };
+export { Button, DoughnutChart, Content, Overlay, Section, Counter, AuthDialog, Header, Hero, DeploymentsCard, MenuContainer, MenuToggle, Sidebar, HealthStatusIndicator, OnlineStatusIndicator, Ticker, DownArrow, TickerCard, Input };

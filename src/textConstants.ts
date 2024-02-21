@@ -4,7 +4,7 @@ const textConstants = {
   },
   buttons: {
     login: ['login', 'Login'],
-    signUp: ['signup', 'Sign Up'],
+    signup: ['signup', 'Sign Up'],
     submit: ['submit', 'Submit'],
     viewMore: ['viewmore', 'View More'],
   },
@@ -27,7 +27,12 @@ const textConstants = {
     option1: "Dashboard",
     option2: "Deployments",
     option3: "Live View",
-  }
+  },
+  loginForm:{
+    title: "Sign in to your account",
+    rememberMe: "Remember me",
+    forgotPassword: "Forgot your password?",
+  },
 };
 
 export default textConstants;
