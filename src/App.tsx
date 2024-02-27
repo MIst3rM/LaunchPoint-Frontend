@@ -4,6 +4,7 @@ import { AnimatePresence } from "framer-motion";
 import Root from "./routes/Root";
 import { AuthDialog } from "./components";
 import { useAuth } from "./providers/auth";
+import Livemap from "./routes/Livemap";
 
 const App = () => {
 
@@ -25,6 +26,10 @@ const App = () => {
         {
             path: "/signup",
             element: <AuthDialog type='signup' layoutId='signupLayout' />
+        },
+        {
+            path: "/livemap",
+            element: <Livemap />
         }
     ]);
 
