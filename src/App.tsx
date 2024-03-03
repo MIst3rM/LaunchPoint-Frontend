@@ -1,4 +1,4 @@
-import * as React from "react";
+import {useEffect, cloneElement} from "react";
 import { useLocation, useRoutes } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
 import Root from "./routes/Root";
@@ -10,8 +10,9 @@ const App = () => {
 
     const { loggedInUser, fetchLoggedInUser } = useAuth();
 
-    React.useEffect(() => {
-        fetchLoggedInUser();
+    useEffect(() => {
+        if(loggedInUser)
+            fetchLoggedInUser();
     }, [fetchLoggedInUser]);
 
     const element = useRoutes([
@@ -39,7 +40,7 @@ const App = () => {
 
     return (
         <AnimatePresence mode="wait" initial={false}>
-            {React.cloneElement(element, { key: location.pathname })}
+            {cloneElement(element, { key: location.pathname })}
         </AnimatePresence>
     );
 }
