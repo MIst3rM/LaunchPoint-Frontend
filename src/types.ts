@@ -1,6 +1,28 @@
 import { motion } from 'framer-motion';
 import { CSSProperties, ReactElement } from 'react';
 import { Models } from "appwrite";
+import * as THREE from 'three'
+
+export interface ImageData {
+    position: [number, number, number];
+    rotation: [number, number, number];
+    url: string;
+}
+
+export interface DeploymentsProps {
+    images: ImageData[];
+}
+
+export interface FrameProps {
+    url: string;
+    c?: THREE.Color;
+}
+
+export interface FramesProps {
+    images: ImageData[];
+    q?: THREE.Quaternion;
+    p?: THREE.Vector3;
+}
 
 export interface LoginFormValues {
     email: string;
