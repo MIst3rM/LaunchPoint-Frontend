@@ -62,7 +62,7 @@ const App = () => {
 
     return (
         <AnimatePresence mode="wait" initial={false}>
-            {React.cloneElement(element, { key: location.pathname })}
+            {element}
         </AnimatePresence>
     );
 }
