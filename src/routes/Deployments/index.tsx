@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import { useEffect, useRef } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Canvas, useFrame } from "@react-three/fiber";
 import { MeshReflectorMaterial, Environment } from "@react-three/drei";
 import { easing } from 'maath'
@@ -15,7 +15,12 @@ const Frames = ({ images, q = new THREE.Quaternion(), p = new THREE.Vector3() }:
     const params = useParams();
     const navigate = useNavigate();
 
+    const updateCameraTransform = (newPosition) => {
+        p.copy(newPosition);
+    };
+
     useEffect(() => {
+        console.log("useEffect running")
         if (ref.current) {
             clicked.current = ref.current.getObjectByName(params?.id);
             if (clicked.current) {
@@ -41,10 +46,12 @@ const Frames = ({ images, q = new THREE.Quaternion(), p = new THREE.Vector3() }:
             ref={ref}
             onClick={(e) => {
                 e.stopPropagation();
-                navigate(clicked.current === e.object ? '/deployments' : `/deployments/item/${e.object.name}`);
+                navigate(
+                    e.object.name === "" ? '/deployments' : clicked.current === e.object ? `/deployments` : `/deployments/item/${e.object.name}`
+                );
             }}
             onPointerMissed={() => navigate('/deployments')}>
-            {images.map((props) => <Frame key={props.url} {...props} />)}
+            {images.map((props) => <Frame key={props.url} updateCameraTransform={updateCameraTransform} {...props} />)}
         </group>
     );
 }
@@ -59,7 +66,7 @@ const Deployments = ({ images }: DeploymentsProps) => {
                 <mesh rotation={[-Math.PI / 2, 0, 0]}>
                     <planeGeometry args={[50, 50]} />
                     <MeshReflectorMaterial
-                        blur={[300, 100]}
+                        blur={[300, 300]}
                         resolution={2048}
                         mixBlur={1}
                         mixStrength={80}
@@ -71,6 +78,12 @@ const Deployments = ({ images }: DeploymentsProps) => {
                         metalness={0.5}
                         mirror={0}
                     />
+                </mesh>
+            </group>
+            <group position={[0, GOLDENRATIO * 4, -2.25]}>
+                <mesh>
+                    <planeGeometry args={[1, 1]} />
+                    <meshStandardMaterial color="#ff0000" metalness={0.5} roughness={0.5} />
                 </mesh>
             </group>
             <Environment preset="city" />

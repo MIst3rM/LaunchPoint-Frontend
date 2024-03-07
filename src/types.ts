@@ -7,6 +7,7 @@ export interface ImageData {
     position: [number, number, number];
     rotation: [number, number, number];
     url: string;
+    title?: string;
 }
 
 export interface DeploymentsProps {

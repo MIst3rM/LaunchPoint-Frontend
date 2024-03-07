@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import { useRef, useState } from 'react'
 import getUuid from 'uuid-by-string'
-import { useCursor, Image, Text } from '@react-three/drei';
+import { useCursor, Image, Text, Plane } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import { easing } from 'maath'
 import { useParams } from 'react-router-dom';
@@ -9,16 +9,27 @@ import { FrameProps } from '../../types';
 
 const GOLDENRATIO = 1.61803398875
 
-const Frame = ({ url, c = new THREE.Color(), ...props }: FrameProps) => {
+const Frame = ({ url, c = new THREE.Color(), updateCameraTransform, ...props }: FrameProps) => {
     const image = useRef<THREE.Mesh>(null);
     const frame = useRef<THREE.Mesh>(null);
+    const button = useRef<THREE.Mesh>(null);
     const params = useParams();
     const [hovered, hover] = useState(false)
+    const [buttonHovered, setButtonHovered] = useState(false);
     const [rnd] = useState(() => Math.random())
     const name = getUuid(url)
     const isActive = params.id === name;
 
     useCursor(hovered)
+
+    const handleClick = (e) => {
+        e.stopPropagation();
+        try {
+            updateCameraTransform(new THREE.Vector3(0, GOLDENRATIO * 4, -2.0));
+        } catch (error) {
+            console.error('Error in handleClick:', error);
+        }
+    };
 
     useFrame((state, dt) => {
         if (image.current && 'material' in image.current && 'zoom' in image.current.material) {
@@ -29,9 +40,11 @@ const Frame = ({ url, c = new THREE.Color(), ...props }: FrameProps) => {
             easing.damp3(image.current.scale, [0.85 * (!isActive && hovered ? 0.85 : 1), 0.9 * (!isActive && hovered ? 0.905 : 1), 1], 0.1, dt);
         }
 
-        if (frame.current && 'material' in frame.current && 'color' in frame.current.material) {
-            const material = frame.current.material as THREE.MeshBasicMaterial;
-            easing.dampC(material.color, hovered ? 'orange' : 'white', 0.1, dt);
+        if (buttonHovered) {
+            // Button interaction visual feedback (optional)
+            button.current.scale.set(1.1, 1.1, 1.1);
+        } else {
+            button.current.scale.set(1, 1, 1);
         }
     });
 
@@ -49,10 +62,29 @@ const Frame = ({ url, c = new THREE.Color(), ...props }: FrameProps) => {
                     <boxGeometry />
                     <meshBasicMaterial toneMapped={false} fog={false} />
                 </mesh>
-                <Image raycast={() => null} ref={image} position={[0, 0, 0.7]} url={url} />
+                <Image raycast={() => null} ref={image} position={[0, 0, 0.69]} url={url} />
+                <Plane
+                    ref={button}
+                    args={[0.2, 0.055]}
+                    position={[0, -0.4, 0.7]}
+                    onPointerOver={() => setButtonHovered(true)}
+                    onPointerOut={() => setButtonHovered(false)}
+                    onClick={handleClick}
+                >
+                    <meshBasicMaterial attach="material" color={buttonHovered ? '#999' : '#555'} transparent />
+                    <Text
+                        maxWidth={0.3}
+                        anchorX="center"
+                        anchorY="middle"
+                        position={[0, 0.01, 0.71]}
+                        fontSize={0.025}
+                    >
+                        Details
+                    </Text>
+                </Plane>
             </mesh>
-            <Text maxWidth={0.1} anchorX="left" anchorY="top" position={[0.55, GOLDENRATIO, 0]} fontSize={0.025}>
-                {name.split('-').join(' ')}
+            <Text maxWidth={0.1} anchorX="left" anchorY="top" position={[0.55, GOLDENRATIO, 0]} fontSize={0.035}>
+                {props.title || name.split('-').join(' ')}
             </Text>
         </group>
     );
