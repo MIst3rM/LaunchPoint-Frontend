@@ -1,11 +1,12 @@
 import * as THREE from 'three'
-import { useState, useEffect, useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import { Canvas, useFrame } from "@react-three/fiber";
-import { MeshReflectorMaterial, Environment } from "@react-three/drei";
+import { MeshReflectorMaterial, Environment, Html } from "@react-three/drei";
 import { easing } from 'maath'
 import { useNavigate, useParams } from 'react-router-dom';
 import { Frame } from '../../components';
 import { DeploymentsProps, FramesProps } from '../../types';
+import Station from '../../components/Station';
 
 const GOLDENRATIO = 1.61803398875;
 
@@ -80,13 +81,16 @@ const Deployments = ({ images }: DeploymentsProps) => {
                     />
                 </mesh>
             </group>
+            <Environment preset="city" />
             <group position={[0, GOLDENRATIO * 4, -2.25]}>
+                <Html fullscreen>
+                    <Station city="Paris" />
+                </Html>
                 <mesh>
                     <planeGeometry args={[1, 1]} />
-                    <meshStandardMaterial color="#ff0000" metalness={0.5} roughness={0.5} />
+                    <meshStandardMaterial color="white" metalness={0.5} roughness={0.5} />
                 </mesh>
             </group>
-            <Environment preset="city" />
         </Canvas>
     );
 };

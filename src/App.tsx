@@ -10,18 +10,18 @@ import { ImageData } from "./types";
 const pexel = (id: number) => `https://images.pexels.com/photos/${id}/pexels-photo-${id}.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260`
 const images: ImageData[] = [
     // Front
-    { position: [0, 0, 1.5], rotation: [0, 0, 0], url: pexel(6073227), title: "Montreal" },
+    { position: [0, 0, 1.5], rotation: [0, 0, 0], url: pexel(2889701), title: "Montreal" },
     // Back
-    { position: [-0.8, 0, -0.6], rotation: [0, 0, 0], url: pexel(416430) },
-    { position: [0.8, 0, -0.6], rotation: [0, 0, 0], url: pexel(310452) },
+    { position: [-0.8, 0, -0.6], rotation: [0, 0, 0], url: pexel(2265845), title: "Paris" },
+    { position: [0.8, 0, -0.6], rotation: [0, 0, 0], url: pexel(5771259), title: "Milan" },
     // Left
-    { position: [-1.75, 0, 0.25], rotation: [0, Math.PI / 2.5, 0], url: pexel(327482) },
-    { position: [-2.15, 0, 1.5], rotation: [0, Math.PI / 2.5, 0], url: pexel(325185) },
-    { position: [-2, 0, 2.75], rotation: [0, Math.PI / 2.5, 0], url: pexel(358574) },
+    { position: [-1.75, 0, 0.25], rotation: [0, Math.PI / 2.5, 0], url: pexel(4390589), title: "San Francisco" },
+    { position: [-2.15, 0, 1.5], rotation: [0, Math.PI / 2.5, 0], url: pexel(1878293), title: "Sydney"},
+    { position: [-2, 0, 2.75], rotation: [0, Math.PI / 2.5, 0], url: pexel(9245761), title: "Miami" },
     // Right
-    { position: [1.75, 0, 0.25], rotation: [0, -Math.PI / 2.5, 0], url: pexel(227675) },
-    { position: [2.15, 0, 1.5], rotation: [0, -Math.PI / 2.5, 0], url: pexel(911738) },
-    { position: [2, 0, 2.75], rotation: [0, -Math.PI / 2.5, 0], url: pexel(1738986) }
+    { position: [1.75, 0, 0.25], rotation: [0, -Math.PI / 2.5, 0], url: pexel(6136571), title: "Los Angeles" },
+    { position: [2.15, 0, 1.5], rotation: [0, -Math.PI / 2.5, 0], url: pexel(2404843), title: "New York" },
+    { position: [2, 0, 2.75], rotation: [0, -Math.PI / 2.5, 0], url: pexel(2834219), title: "London"}
 ]
 
 const App = () => {
