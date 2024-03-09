@@ -4,27 +4,33 @@ import getUuid from 'uuid-by-string'
 import { useCursor, Image, Text, Plane } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import { easing } from 'maath'
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { FrameProps } from '../../types';
 
 const GOLDENRATIO = 1.61803398875
+
+const mediumFont = '/Inter-Medium.ttf'
 
 const Frame = ({ url, c = new THREE.Color(), updateCameraTransform, ...props }: FrameProps) => {
     const image = useRef<THREE.Mesh>(null);
     const frame = useRef<THREE.Mesh>(null);
     const button = useRef<THREE.Mesh>(null);
     const params = useParams();
+    const navigate = useNavigate();
     const [hovered, hover] = useState(false)
     const [buttonHovered, setButtonHovered] = useState(false);
     const [rnd] = useState(() => Math.random())
     const name = getUuid(url)
     const isActive = params.id === name;
 
+    const fontProps = { font: mediumFont, fontSize: 0.025, letterSpacing: 0.15, lineHeight: 1, 'material-toneMapped': false }
+
     useCursor(hovered)
 
     const handleClick = (e) => {
         e.stopPropagation();
         try {
+            navigate('/deployments/item/' + name + '/stations')
             updateCameraTransform(new THREE.Vector3(0, GOLDENRATIO * 4, -2.0));
         } catch (error) {
             console.error('Error in handleClick:', error);
@@ -41,7 +47,6 @@ const Frame = ({ url, c = new THREE.Color(), updateCameraTransform, ...props }: 
         }
 
         if (buttonHovered) {
-            // Button interaction visual feedback (optional)
             button.current.scale.set(1.1, 1.1, 1.1);
         } else {
             button.current.scale.set(1, 1, 1);
@@ -76,8 +81,8 @@ const Frame = ({ url, c = new THREE.Color(), updateCameraTransform, ...props }: 
                         maxWidth={0.3}
                         anchorX="center"
                         anchorY="middle"
-                        position={[0, 0.01, 0.71]}
-                        fontSize={0.025}
+                        position={[0, 0, 0.01]}
+                        {...fontProps}
                     >
                         Details
                     </Text>

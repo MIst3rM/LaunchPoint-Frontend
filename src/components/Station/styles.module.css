@@ -1,0 +1,16 @@
+.section {
+    box-sizing: border-box;
+    display: flex;
+    justify-content: flex-start;
+    overflow: hidden;
+    padding: 50px;
+    font-weight: 700;
+    font-size: 64px;
+    letter-spacing: -4px;
+
+    span {
+        display: block;
+        transform: translateX(-100px);
+        opacity: 0;
+    }
+}

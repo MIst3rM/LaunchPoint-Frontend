@@ -51,9 +51,11 @@ const App = () => {
             children: [
                 {
                     path: "item/:id",
+                    element: <Deployments images={images} />,
                     children: [
                         {
-                            path: "item/:id/stations",
+                            path: "stations",
+                            element: <Deployments images={images} />,
                         }
                     ]
                 }
