@@ -44,7 +44,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     // Provide the context with the login method and any other auth methods needed
     return (
-        <AuthContext.Provider value={{ loggedInUser, login, fetchLoggedInUser, loading }}>
+        <AuthContext.Provider value={{ loggedInUser, login, fetchLoggedInUser, loading, client }}>
             {children}
         </AuthContext.Provider>
     );

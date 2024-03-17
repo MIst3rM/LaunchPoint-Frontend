@@ -1,4 +1,4 @@
-.section {
+.city {
     box-sizing: border-box;
     display: flex;
     justify-content: flex-start;
@@ -7,10 +7,8 @@
     font-weight: 700;
     font-size: 64px;
     letter-spacing: -4px;
+}
 
-    span {
-        display: block;
-        transform: translateX(-100px);
-        opacity: 0;
-    }
+.container::-webkit-scrollbar {
+    display: none;
 }

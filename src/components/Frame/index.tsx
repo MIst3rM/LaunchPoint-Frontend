@@ -11,7 +11,7 @@ const GOLDENRATIO = 1.61803398875
 
 const mediumFont = '/Inter-Medium.ttf'
 
-const Frame = ({ url, c = new THREE.Color(), updateCameraTransform, ...props }: FrameProps) => {
+const Frame = ({ url, c = new THREE.Color(), details, ...props }: FrameProps) => {
     const image = useRef<THREE.Mesh>(null);
     const frame = useRef<THREE.Mesh>(null);
     const button = useRef<THREE.Mesh>(null);
@@ -30,8 +30,8 @@ const Frame = ({ url, c = new THREE.Color(), updateCameraTransform, ...props }: 
     const handleClick = (e) => {
         e.stopPropagation();
         try {
-            navigate('/deployments/item/' + name + '/stations')
-            updateCameraTransform(new THREE.Vector3(0, GOLDENRATIO * 4, -2.0));
+            details(),
+                navigate('/deployments/item/' + name + '/stations')
         } catch (error) {
             console.error('Error in handleClick:', error);
         }
@@ -69,6 +69,7 @@ const Frame = ({ url, c = new THREE.Color(), updateCameraTransform, ...props }: 
                 </mesh>
                 <Image raycast={() => null} ref={image} position={[0, 0, 0.69]} url={url} />
                 <Plane
+                    name={`button-${name}`}
                     ref={button}
                     args={[0.2, 0.055]}
                     position={[0, -0.4, 0.7]}

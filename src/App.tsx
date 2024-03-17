@@ -16,17 +16,17 @@ const images: ImageData[] = [
     { position: [0.8, 0, -0.6], rotation: [0, 0, 0], url: pexel(5771259), title: "Milan" },
     // Left
     { position: [-1.75, 0, 0.25], rotation: [0, Math.PI / 2.5, 0], url: pexel(4390589), title: "San Francisco" },
-    { position: [-2.15, 0, 1.5], rotation: [0, Math.PI / 2.5, 0], url: pexel(1878293), title: "Sydney"},
+    { position: [-2.15, 0, 1.5], rotation: [0, Math.PI / 2.5, 0], url: pexel(1878293), title: "Sydney" },
     { position: [-2, 0, 2.75], rotation: [0, Math.PI / 2.5, 0], url: pexel(9245761), title: "Miami" },
     // Right
     { position: [1.75, 0, 0.25], rotation: [0, -Math.PI / 2.5, 0], url: pexel(6136571), title: "Los Angeles" },
     { position: [2.15, 0, 1.5], rotation: [0, -Math.PI / 2.5, 0], url: pexel(2404843), title: "New York" },
-    { position: [2, 0, 2.75], rotation: [0, -Math.PI / 2.5, 0], url: pexel(2834219), title: "London"}
+    { position: [2, 0, 2.75], rotation: [0, -Math.PI / 2.5, 0], url: pexel(2834219), title: "London" }
 ]
 
 const App = () => {
 
-    const { loggedInUser, fetchLoggedInUser } = useAuth();
+    const { loggedInUser, fetchLoggedInUser, client } = useAuth();
 
     React.useEffect(() => {
         fetchLoggedInUser();
@@ -51,11 +51,11 @@ const App = () => {
             children: [
                 {
                     path: "item/:id",
-                    element: <Deployments images={images} />,
+                    // element: <Deployments images={images} />,
                     children: [
                         {
                             path: "stations",
-                            element: <Deployments images={images} />,
+                            // element: <Deployments images={images} />,
                         }
                     ]
                 }
