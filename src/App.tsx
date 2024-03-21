@@ -1,9 +1,10 @@
-import * as React from "react";
+import {useEffect, cloneElement} from "react";
 import { useLocation, useRoutes } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
 import Root from "./routes/Root";
 import { AuthDialog } from "./components";
 import { useAuth } from "./providers/auth";
+import Livemap from "./routes/Livemap";
 import Deployments from "./routes/Deployments";
 import { ImageData } from "./types";
 
@@ -28,8 +29,9 @@ const App = () => {
 
     const { loggedInUser, fetchLoggedInUser, client } = useAuth();
 
-    React.useEffect(() => {
-        fetchLoggedInUser();
+    useEffect(() => {
+        if(loggedInUser)
+            fetchLoggedInUser();
     }, [fetchLoggedInUser]);
 
     const element = useRoutes([
@@ -44,6 +46,10 @@ const App = () => {
         {
             path: "/signup",
             element: <AuthDialog type='signup' layoutId='signupLayout' />
+        },
+        {
+            path: "/livemap",
+            element: <Livemap />
         },
         {
             path: "/deployments",
