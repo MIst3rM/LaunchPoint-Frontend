@@ -18,5 +18,6 @@ import DownArrow from "./Arrow/DownArrow";
 import TickerCard from "./Ticker/Card";
 import Input from "./Input";
 import Globe from "./Interactive/Globe";
+import Frame from "./Frame";
 
-export { Button, DoughnutChart, Content, Overlay, Section, Counter, AuthDialog, Header, Hero, DeploymentsCard, MenuContainer, MenuToggle, Sidebar, HealthStatusIndicator, OnlineStatusIndicator, Ticker, DownArrow, TickerCard, Input, Globe };
+export { Button, DoughnutChart, Content, Overlay, Section, Counter, AuthDialog, Header, Hero, DeploymentsCard, MenuContainer, MenuToggle, Sidebar, HealthStatusIndicator, OnlineStatusIndicator, Ticker, DownArrow, TickerCard, Input, Globe, Frame };

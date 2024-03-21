@@ -1,6 +1,54 @@
 import { motion } from 'framer-motion';
 import { CSSProperties, ReactElement } from 'react';
-import { Models } from "appwrite";
+import { Models, Client } from "appwrite";
+import * as THREE from 'three'
+
+export enum status{
+    available = 'AVAILABLE',
+    unavailable = 'UNAVAILABLE',
+    maintenance = 'MAINTENANCE_NEEDED',
+    inuse = 'IN_USE'
+}
+
+export interface Station {
+    online: boolean;
+    status: status;
+    location: string;
+    last_online: string;
+    batteries: Battery[];
+    name: string;
+}
+
+export interface Battery{
+    status: status;
+    capacity: number;
+    charge_level: number;
+    station: Station[];
+    drone_model: string;
+}
+
+export interface ImageData {
+    position: [number, number, number];
+    rotation: [number, number, number];
+    url: string;
+    title?: string;
+}
+
+export interface DeploymentsProps {
+    images: ImageData[];
+}
+
+export interface FrameProps {
+    url: string;
+    c?: THREE.Color;
+    details: () => void;
+}
+
+export interface FramesProps {
+    images: ImageData[];
+    q?: THREE.Quaternion;
+    p?: THREE.Vector3;
+}
 
 export interface LoginFormValues {
     email: string;
@@ -13,6 +61,7 @@ export interface AuthContextType {
     login: (email: string, password: string) => Promise<void>;
     fetchLoggedInUser: () => Promise<void>;
     loading: boolean;
+    client: Client;
 }
 
 export interface RootRouteProps {
