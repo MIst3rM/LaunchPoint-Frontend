@@ -7,6 +7,8 @@ import { easing } from 'maath'
 import { useNavigate, useParams } from 'react-router-dom';
 import { FrameProps } from '../../types';
 
+import styles from './styles.module.css';
+
 const GOLDENRATIO = 1.61803398875
 
 const mediumFont = '/Inter-Medium.ttf'
@@ -30,7 +32,7 @@ const Frame = ({ url, c = new THREE.Color(), details, ...props }: FrameProps) =>
     const handleClick = (e) => {
         e.stopPropagation();
         try {
-            details(),
+            details(props.title),
                 navigate('/deployments/item/' + name + '/stations')
         } catch (error) {
             console.error('Error in handleClick:', error);
@@ -47,9 +49,9 @@ const Frame = ({ url, c = new THREE.Color(), details, ...props }: FrameProps) =>
         }
 
         if (buttonHovered) {
-            button.current.scale.set(1.1, 1.1, 1.1);
+            easing.damp3(button.current.scale, [1.1, 1.1, 1.1], 0.1, dt);
         } else {
-            button.current.scale.set(1, 1, 1);
+            easing.damp3(button.current.scale, [1, 1, 1], 0.1, dt);
         }
     });
 
@@ -71,13 +73,13 @@ const Frame = ({ url, c = new THREE.Color(), details, ...props }: FrameProps) =>
                 <Plane
                     name={`button-${name}`}
                     ref={button}
-                    args={[0.2, 0.055]}
+                    args={[0.25, 0.045]}
                     position={[0, -0.4, 0.7]}
                     onPointerOver={() => setButtonHovered(true)}
                     onPointerOut={() => setButtonHovered(false)}
                     onClick={handleClick}
                 >
-                    <meshBasicMaterial attach="material" color={buttonHovered ? '#999' : '#555'} transparent />
+                    <meshBasicMaterial attach="material" color={'#605f5f'} transparent opacity={0.7} />
                     <Text
                         maxWidth={0.3}
                         anchorX="center"

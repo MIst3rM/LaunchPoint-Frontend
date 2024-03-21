@@ -19,6 +19,8 @@ const Card = ({ station, client }: CardProps) => {
     const [slots, setSlots] = useState([]);
     const [hoveredBattery, setHoveredBattery] = useState(null);
 
+    const [latitude, longitude] = station.coordinates.split(/(?<=N|S) /);
+
     // Function to update a specific slot's battery level
     const updateBatteryLevel = (batteryId, newLevel) => {
         setSlots((currentSlots) => currentSlots.map(slot => {
@@ -31,6 +33,7 @@ const Card = ({ station, client }: CardProps) => {
 
     useEffect(() => {
         // // Sort the slots initially
+        console.log(station)
         setSlots(station.slots.slice().sort((a, b) => a.order_in_grid - b.order_in_grid));
 
         // // Construct an array of channels to subscribe to based on battery IDs
@@ -39,14 +42,14 @@ const Card = ({ station, client }: CardProps) => {
         //     .map(slot => `databases.${database_id}.collections.${batteries_collection_id}.documents.${slot.battery.$id}`);
 
         // if (channels.length > 0) {
-        // const unsubscribe = client.subscribe(`databases.${database_id}.collections.${batteries_collection_id}.documents`, (response) => {
-        //     updateBatteryLevel(response.payload.$id, response.payload.charge_level);
-        // });
+        const unsubscribe = client.subscribe(`databases.${database_id}.collections.${batteries_collection_id}.documents`, (response) => {
+            updateBatteryLevel(response.payload.$id, response.payload.charge_level);
+        });
 
-        // return () => {
-        //     console.log('Unsubscribing');
-        //     unsubscribe();
-        // };
+        return () => {
+            console.log('Unsubscribing');
+            unsubscribe();
+        };
         // }
     }, [station.slots, client]);
 
@@ -100,7 +103,7 @@ const Card = ({ station, client }: CardProps) => {
                     borderBottomRightRadius: "15px",
                     overflow: "hidden"
                 }}>
-                    <div style={{ display: "flex", minHeight: "30%" }}>
+                    <div style={{ display: "flex", width: "100%", height: "100%" }}>
                         <AnimatePresence mode="wait">
                             {hoveredBattery ? (
                                 <motion.div
@@ -112,6 +115,8 @@ const Card = ({ station, client }: CardProps) => {
                                 >
                                     <h2>{hoveredBattery.$id}</h2>
                                     <p>{hoveredBattery.drone_model}</p>
+                                    <p>Capacity: {hoveredBattery.capacity}</p>
+                                    {hoveredBattery.warning && <p>Warning: {hoveredBattery.warning}</p>}
                                 </motion.div>
                             ) : (
                                 <motion.div
@@ -120,35 +125,12 @@ const Card = ({ station, client }: CardProps) => {
                                     animate={{ x: 0, opacity: 1 }}
                                     exit={{ x: -100, opacity: 0 }}
                                     transition={{ duration: 0.5 }}
+                                    style={{ display: "flex", flexDirection: "column", width: "100%" }}
                                 >
-                                    <h2>{station.name}</h2>
-                                    <p>{station.description || 'No description available'}</p>
-                                </motion.div>
-                            )}
-                        </AnimatePresence>
-                    </div>
-                    <div style={{ display: "flex", minHeight: "70%" }}>
-                        <AnimatePresence mode="wait">
-                            {hoveredBattery ? (
-                                <motion.div
-                                    key="batteryDetails"
-                                    initial={{ x: -100, opacity: 0 }}
-                                    animate={{ x: 0, opacity: 1 }}
-                                    exit={{ x: -100, opacity: 0 }}
-                                    transition={{ duration: 0.5 }}
-                                >
-                                    <p>Capacity: {hoveredBattery.capacity}</p>
-                                    {hoveredBattery.warning && <p>Warning: {hoveredBattery.warning}</p>}
-                                </motion.div>
-                            ) : (
-                                <motion.div
-                                    key="stationDetails"
-                                    initial={{ x: -100, opacity: 0 }}
-                                    animate={{ x: 0, opacity: 1 }}
-                                    exit={{ x: -100, opacity: 0 }}
-                                    transition={{ duration: 0.5 }}
-                                >
-                                    <p>Additional station information here</p>
+                                    <span style={{ alignSelf: "flex-end" }}>{latitude}</span>
+                                    <span style={{ alignSelf: "flex-end" }}>{longitude}</span>
+                                    <h3>History</h3>
+                                    <div className={styles.historySection}></div>
                                 </motion.div>
                             )}
                         </AnimatePresence>

@@ -7,9 +7,10 @@ import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { Frame } from '../../components';
 import { DeploymentsProps, FramesProps } from '../../types';
 import Stations from '../../components/Stations';
-import styles from './styles.module.css';
 import { useAuth } from '../../providers/auth';
 import getUuid from 'uuid-by-string'
+
+import { motion } from 'framer-motion';
 
 const GOLDENRATIO = 1.61803398875;
 
@@ -23,8 +24,10 @@ const Frames = memo(({ images, q = new THREE.Quaternion(), p = new THREE.Vector3
     const navigate = useNavigate();
     const location = useLocation();
     const [stationsVisible, setStationsVisible] = useState(false);
+    const [activeLocation, setActiveLocation] = useState('');
 
-    const toggleStationsVisibility = () => {
+    const toggleStationsVisibility = (city) => {
+        setActiveLocation(city);
         setStationsVisible(!stationsVisible);
     }
 
@@ -88,7 +91,7 @@ const Frames = memo(({ images, q = new THREE.Quaternion(), p = new THREE.Vector3
             {stationsVisible &&
                 <group name={`stations`} position={[0, GOLDENRATIO * 4, -2.25]}>
                     <Html calculatePosition={() => [0, 0, 0]}>
-                        <Stations city={`Paris`} client={client} />
+                        <Stations city={activeLocation} client={client} />
                     </Html>
                     <mesh name={`stations-mesh`} onDoubleClick={
                         (e) => {
@@ -112,30 +115,41 @@ const Deployments = memo(({ images }: DeploymentsProps) => {
     const imagesMemo = useMemo(() => images, [images]);
 
     return (
-        <Canvas dpr={[1, 1.5]} camera={{ fov: 70, position: [0, 3, 15] }}>
-            <color attach="background" args={['#191920']} />
-            <fog attach="fog" args={['#191920', 0, 15]} />
-            <group position={[0, -0.5, 0]}>
-                <Frames images={imagesMemo} />
-                <mesh rotation={[-Math.PI / 2, 0, 0]}>
-                    <planeGeometry args={[50, 50]} />
-                    <MeshReflectorMaterial
-                        blur={[300, 300]}
-                        resolution={2048}
-                        mixBlur={1}
-                        mixStrength={80}
-                        roughness={1}
-                        depthScale={1.2}
-                        minDepthThreshold={0.4}
-                        maxDepthThreshold={1.4}
-                        color="#050505"
-                        metalness={0.5}
-                        mirror={0}
-                    />
-                </mesh>
-            </group>
-            <Environment preset="city" />
-        </Canvas>
+        <motion.div
+            key="deployments"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1, transition: { duration: 1.5 } }}
+            exit={{ opacity: 0, transition: { duration: 1.5 } }}
+            style={{
+                width: '100%',
+                height: '100%',
+            }}
+        >
+            <Canvas dpr={[1, 1.5]} camera={{ fov: 70, position: [0, 3, 15] }}>
+                <color attach="background" args={['#191920']} />
+                <fog attach="fog" args={['#191920', 0, 15]} />
+                <group position={[0, -0.5, 0]}>
+                    <Frames images={imagesMemo} />
+                    <mesh rotation={[-Math.PI / 2, 0, 0]}>
+                        <planeGeometry args={[50, 50]} />
+                        <MeshReflectorMaterial
+                            blur={[300, 300]}
+                            resolution={2048}
+                            mixBlur={1}
+                            mixStrength={80}
+                            roughness={1}
+                            depthScale={1.2}
+                            minDepthThreshold={0.4}
+                            maxDepthThreshold={1.4}
+                            color="#050505"
+                            metalness={0.5}
+                            mirror={0}
+                        />
+                    </mesh>
+                </group>
+                <Environment preset="city" />
+            </Canvas>
+        </motion.div>
     );
 });
 

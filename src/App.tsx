@@ -68,7 +68,7 @@ const App = () => {
     if (!element) return null;
 
     return (
-        <AnimatePresence mode="wait" initial={false}>
+        <AnimatePresence mode="wait">
             {element}
         </AnimatePresence>
     );
