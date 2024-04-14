@@ -96,7 +96,6 @@ const Ticker = ({
             const start = childrenRef[0].current ? isHorizontal ? childrenRef[0].current.offsetLeft : childrenRef[0].current.offsetTop : 0
             const end = childrenRef[1].current ? isHorizontal ? childrenRef[1].current.offsetLeft + childrenRef[1].current.offsetWidth : childrenRef[1].current.offsetTop + childrenRef[1].current.offsetHeight : 0
             const childrenLength = end - start + gap
-            console.log(parentLength, childrenLength)
             setSize({
                 parent: parentLength,
                 children: childrenLength

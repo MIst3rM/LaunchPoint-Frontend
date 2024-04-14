@@ -16,5 +16,11 @@ import OnlineStatusIndicator from "./Status/OnlineStatusIndicator";
 import Ticker from "./Ticker";
 import DownArrow from "./Arrow/DownArrow";
 import TickerCard from "./Ticker/Card";
+import Input from "./Input";
+import Globe from "./Interactive/Globe";
+import Frame from "./Frame";
+import Notification from "./Notifications";
+import CloseButton from "./Button/Close";
+import TextSpinnerLoader from "./Loading";
 
-export { Button, DoughnutChart, Content, Overlay, Section, Counter, AuthDialog, Header, Hero, DeploymentsCard, MenuContainer, MenuToggle, Sidebar, HealthStatusIndicator, OnlineStatusIndicator, Ticker, DownArrow, TickerCard };
+export { Button, DoughnutChart, Content, Overlay, Section, Counter, AuthDialog, Header, Hero, DeploymentsCard, MenuContainer, MenuToggle, Sidebar, HealthStatusIndicator, OnlineStatusIndicator, Ticker, DownArrow, TickerCard, Input, Globe, Frame, Notification, CloseButton, TextSpinnerLoader };

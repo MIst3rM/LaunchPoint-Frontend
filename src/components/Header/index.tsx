@@ -1,31 +1,55 @@
-import { useEffect, useRef, useState } from 'react'
-import { Link } from "react-router-dom";
-
+import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
+import { useAuth } from '../../providers/auth';
+import { BsPersonCircle } from "react-icons/bs";
+import { motion } from "framer-motion";
 import styles from './styles.module.css'
-import MenuContainer from '../Menu/MenuContainer'
 import Button from '../Button'
 import textConstants from '../../textConstants'
-import { NavOption, AuthDialogType } from '../../types'
-import AuthDialog from '../Dialog/AuthDialog'
+
+const ulVariants = {
+	open: {
+		clipPath: "inset(0% 0% 0% 0% round 10px)",
+		transition: {
+			type: "spring",
+			bounce: 0,
+			duration: 0.5,
+		}
+	},
+	closed: {
+		clipPath: "inset(0% 0% 100% 100% round 10px)",
+		transition: {
+			type: "spring",
+			bounce: 0,
+			duration: 0.5,
+		}
+	},
+};
+
+const calculateDelay = (index, startDelay = 0.15, staggerDuration = 0.1) => startDelay + index * staggerDuration;
+
+const getLiTransition = (index, isOpen) => ({
+	delay: isOpen ? calculateDelay(index) : 0,
+	duration: 0.2,
+});
+
+const liVariants = {
+	open: {
+		opacity: 1,
+		scale: 1,
+		filter: "blur(0px)",
+	},
+	closed: {
+		opacity: 0,
+		scale: 0.3,
+		filter: "blur(20px)",
+	},
+};
+
 
 const Header = () => {
-	const [selectedNavOption, setSelectedNavOption] = useState<NavOption | null>(null)
-	const [selectedNavOptionPosition, setSelectedNavOptionPosition] = useState<{ x: number }>({ x: 0 })
-	//TODO: Replace this with a proper authentication check
-	const [isSignedIn, setIsSignedIn] = useState(true);
-	const [isAuthDialogOpen, setIsAuthDialogOpen] = useState(false)
-	const [activeAuthType, setActiveAuthType] = useState<AuthDialogType>('login');
-
-	const option1 = useRef<HTMLParagraphElement>(null)
-	const option2 = useRef<HTMLParagraphElement>(null)
-	const option3 = useRef<HTMLParagraphElement>(null)
-
-	const handleShowAuthDialog = (type?: AuthDialogType) => {
-		if (type) {
-			setActiveAuthType(type);
-		}
-		setIsAuthDialogOpen(!isAuthDialogOpen);
-	};
+	const [isOpen, setIsOpen] = useState(false);
+	const { loggedInUser, logout } = useAuth();
 
 	useEffect(() => {
 		const glowEffects = document.querySelectorAll(".glowEffect");
@@ -37,131 +61,96 @@ const Header = () => {
 				line.setAttribute("rx", rx);
 			});
 		});
-	}, [isAuthDialogOpen])
-
-
-	useEffect(() => {
-		const resizeHandler = () => {
-			if (selectedNavOption !== null || selectedNavOptionPosition.x !== 0) {
-				setSelectedNavOptionPosition({ x: 0 })
-				setSelectedNavOption(null)
-			}
-		}
-		document.addEventListener('resize', resizeHandler)
-
-		return () => document.removeEventListener('resize', resizeHandler)
-	}, [selectedNavOption, selectedNavOptionPosition.x])
-
-
-
-	const onNavOptionHover = (navItemId: NavOption) => {
-		if (selectedNavOption === navItemId)
-			return
-
-		let navOptionScreenPosition: DOMRect
-
-		switch (navItemId) {
-			case textConstants.navBarOptions.option1:
-				if (option1 === null || option1.current === null)
-					return
-				navOptionScreenPosition = option1.current.getBoundingClientRect()
-				break
-			case textConstants.navBarOptions.option2:
-				if (option2 === null || option2.current === null)
-					return
-				navOptionScreenPosition = option2.current.getBoundingClientRect()
-				break
-			case textConstants.navBarOptions.option3:
-				if (option3 === null || option3.current === null)
-					return
-				navOptionScreenPosition = option3.current.getBoundingClientRect()
-				break
-			default:
-				return
-		}
-
-		setSelectedNavOptionPosition({ x: navOptionScreenPosition.left + navOptionScreenPosition.width / 2 })
-		setSelectedNavOption(navItemId)
-	}
-
-
-	const onMouseLeave = () => {
-		setSelectedNavOption(null)
-		setSelectedNavOptionPosition({ x: 0 })
-	}
-
-	const onNavOptionClicked = (navItemId: NavOption) => {
-		selectedNavOption !== null ? onMouseLeave() : onNavOptionHover(navItemId)
-	}
-
-	const handleNavOptionInteraction = (option: NavOption) => {
-		// This function will handle hover and focus events
-		const handleInteraction = () => {
-			onNavOptionHover(option);
-		};
-
-		// This function will handle click events
-		const handleClick = () => {
-			onNavOptionClicked(option);
-		};
-
-		return {
-			onMouseEnter: handleInteraction,
-			onFocus: handleInteraction,
-			onClick: handleClick,
-			onTouchStart: handleClick
-		};
-	};
-
+	}, [])
 
 	return (
 		<header className={styles.header} style={{
-			justifyContent: isSignedIn ? 'center' : 'space-between'
+			justifyContent: loggedInUser ? 'center' : 'space-between'
 		}}>
 			<h1>{textConstants.app.name}</h1>
-			{isSignedIn &&
-				<div onMouseLeave={onMouseLeave} className={styles.navigationWrapper}>
-					<nav className={styles.navigationItems}>
-						<button {...handleNavOptionInteraction('Dashboard')}>
-							<p ref={option1}>{textConstants.navBarOptions.option1}</p>
-						</button>
+			{loggedInUser &&
+				<>
+					<div className={styles.navigationWrapper}>
+						<nav className={styles.navigationItems}>
+							<button>
+								<Link to="/">
+									<p>{textConstants.navBarOptions.option1}</p>
+								</Link>
+							</button>
 
-						<button {...handleNavOptionInteraction('Deployments')}>
-							<p ref={option2}>{textConstants.navBarOptions.option2}</p>
-						</button>
+							<button>
+								<Link to="/deployments">
+									<p>{textConstants.navBarOptions.option2}</p>
+								</Link>
+							</button>
 
-						<button {...handleNavOptionInteraction('Live View')}>
-							<p ref={option3}>{textConstants.navBarOptions.option3}</p>
-						</button>
-					</nav>
-					<MenuContainer
-						selectedNavOption={selectedNavOption}
-						selectedNavOptionPosition={selectedNavOptionPosition}
-					/>
-				</div>
+							<button>
+								<Link to="/livemap">
+									<p>{textConstants.navBarOptions.option3}</p>
+								</Link>
+							</button>
+						</nav>
+					</div>
+					<motion.nav className={styles.menu} initial="closed" animate={isOpen ? "open" : "closed"}>
+						<div
+							style={{
+								width: 100,
+								height: 140,
+							}}
+						/>
+						<motion.button
+							style={{
+								background: 'none',
+								border: 'none',
+								cursor: 'pointer',
+								display: 'flex',
+								justifyContent: 'center',
+							}}
+							onClick={() => setIsOpen(!isOpen)}
+						>
+							<BsPersonCircle style={{
+								fontSize: '1.5rem',
+								color: 'white'
+							}} />
+						</motion.button>
+						<motion.ul
+							className={styles.profileMenu}
+							variants={ulVariants}
+							initial="closed"
+							animate={isOpen ? "open" : "closed"}
+							style={{
+								pointerEvents: isOpen ? "auto" : "none",
+							}}
+						>
+							{["Account", "Logout"].map((item, index) => (
+								<motion.li
+									key={item}
+									className={styles.profileMenuItem}
+									variants={liVariants}
+									initial="closed"
+									animate={isOpen ? "open" : "closed"}
+									exit="closed"
+									custom={index}
+									transition={getLiTransition(index, isOpen)}
+									whileHover={{ scale: 1.1 }}
+									onClick={item === "Logout" ? logout : undefined}
+								>
+									{item}
+								</motion.li>
+							))}
+						</motion.ul>
+
+					</motion.nav>
+				</>
 			}
-			{!isSignedIn &&
+			{
+				!loggedInUser &&
 				<div className={styles.authButtonsWrapper}>
-					{!isAuthDialogOpen &&
-						<>
-							<Button text={textConstants.buttons.signUp[1]} type='signup' layoutId='signupLayout' showDialog={() => handleShowAuthDialog('signup')} />
-							<Button text={textConstants.buttons.login[1]} type='login' layoutId='loginLayout' showDialog={() => handleShowAuthDialog('login')} />
-						</>
-					}
-					{isAuthDialogOpen &&
-						<>
-							{activeAuthType === 'login' &&
-								<Button text={textConstants.buttons.signUp[1]} type='signup' layoutId='signupLayout' showDialog={() => handleShowAuthDialog('signup')} />
-							}
-							{activeAuthType === 'signup' &&
-								<Button text={textConstants.buttons.login[1]} type='login' layoutId='loginLayout' showDialog={() => handleShowAuthDialog('login')} />
-							}
-							<AuthDialog type={activeAuthType} layoutId={`${activeAuthType}Layout`} isOpen={isAuthDialogOpen} showDialog={() => handleShowAuthDialog(undefined)} />
-						</>
-					}
+					<Button text={textConstants.buttons.signup[1]} type='signup' layoutId='signupLayout' />
+					<Button text={textConstants.buttons.login[1]} type='login' layoutId='loginLayout' />
 				</div>
 			}
-		</header>
+		</header >
 	)
 }
 

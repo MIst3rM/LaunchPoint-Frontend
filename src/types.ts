@@ -1,5 +1,73 @@
 import { motion } from 'framer-motion';
 import { CSSProperties, ReactElement } from 'react';
+import { Models, Client } from "appwrite";
+import * as THREE from 'three'
+
+export enum status{
+    available = 'AVAILABLE',
+    unavailable = 'UNAVAILABLE',
+    maintenance = 'MAINTENANCE_NEEDED',
+    inuse = 'IN_USE'
+}
+
+export interface Station {
+    online: boolean;
+    status: status;
+    location: string;
+    last_online: string;
+    batteries: Battery[];
+    name: string;
+}
+
+export interface Battery{
+    status: status;
+    capacity: number;
+    charge_level: number;
+    station: Station[];
+    drone_model: string;
+}
+
+export interface ImageData {
+    position: [number, number, number];
+    rotation: [number, number, number];
+    url: string;
+    title?: string;
+}
+
+export interface DeploymentsProps {
+    images: ImageData[];
+}
+
+export interface FrameProps {
+    url: string;
+    c?: THREE.Color;
+    details: () => void;
+}
+
+export interface FramesProps {
+    images: ImageData[];
+    q?: THREE.Quaternion;
+    p?: THREE.Vector3;
+}
+
+export interface LoginFormValues {
+    email: string;
+    password: string;
+    rememberMe: boolean;
+}
+
+export interface AuthContextType {
+    loggedInUser: Models.User<Models.Preferences> | null;
+    login: (email: string, password: string) => Promise<void>;
+    logout: () => Promise<void>;
+    fetchLoggedInUser: () => Promise<void>;
+    loading: boolean;
+    client: Client;
+}
+
+export interface RootRouteProps {
+    loggedInUser: Models.User<Models.Preferences> | null;
+}
 
 export interface ContainerProps {
     children: React.ReactNode;
@@ -9,6 +77,12 @@ export interface ContainerProps {
 export interface CustomProps {
     classes?: string | string[];
     effects?: Partial<MotionDivProps>;
+}
+
+export interface SidebarProps {
+    openSidebar: (isOpen: boolean) => void;
+    navClasses?: string | string[];
+    backgroundClasses?: string | string[];
 }
 
 export interface HeroProps {
@@ -21,18 +95,13 @@ export interface ButtonProps {
     text: string
     type: ButtonType
     layoutId?: string
-    showDialog?: (isOpen: boolean) => void;
+    onClick?: () => void;
+    disabled?: boolean;
 }
 
 export interface AuthDialogProps {
-    type: AuthDialogType
+    type?: AuthDialogType
     layoutId?: string
-    isOpen: boolean
-    showDialog?: (isOpen: boolean) => void;
-}
-
-export interface OverlayProps {
-    isOpen: boolean
 }
 
 export interface CounterProps {
@@ -88,12 +157,11 @@ export interface TickerProps {
 }
 
 export interface TickerCardProps {
-    id: string;
     style?: CSSProperties;
-    data?: { [key: string]: any };
+    data?: any;
 }
 
-export type ButtonType = 'login' | 'signup' | 'edit' | 'delete';
+export type ButtonType = 'login' | 'logout' | 'signup' | 'edit' | 'delete' | 'continue' | 'seemore';
 
 export type AuthDialogType = 'login' | 'signup';
 

@@ -51,6 +51,16 @@
     height: 600px;
 }
 
-.cardsContainerHeader{
+.cardsContainerHeader {
     align-self: center;
+}
+
+.privacyScreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: whitesmoke;
+    z-index: 2;
 }

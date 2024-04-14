@@ -4,10 +4,21 @@
     height: 22px;
 
     aspect-ratio: 1 / 1;
-    background-color: #21e0bd;
-
     border-radius: 100%;
-    box-shadow: 0 2px 9px 1px #21e0bd9e, 0 2px 20px #21e0bd63;
-
-    align-self: flex-end;
 }
+
+.green {
+    background-color: #21e0bd;
+    box-shadow: 0 2px 9px 1px #21e0bd9e, 0 2px 20px #21e0bd63;
+}
+
+.red {
+    background-color: #ff3f34;
+    box-shadow: 0 2px 9px 1px #ff3f349e, 0 2px 20px #ff3f3463;
+}
+
+.yellow {
+    background-color: #f9ae23;
+    box-shadow: 0 2px 9px 1px #f9ae239e, 0 2px 20px #f9ae2363;
+}
+

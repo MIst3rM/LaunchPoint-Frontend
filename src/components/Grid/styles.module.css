@@ -1,0 +1,14 @@
+.grid {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(auto-fill, minmax(100px, 1fr)); 
+    gap: 2rem;
+    padding: 1rem;
+    justify-items: center;
+    align-items: start; /* Align to the start to avoid stretching */
+
+    background-color: rgb(162 171 180);
+    border-radius: 15px;
+}

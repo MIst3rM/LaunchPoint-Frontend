@@ -1,0 +1,14 @@
+.city {
+    box-sizing: border-box;
+    display: flex;
+    justify-content: flex-start;
+    overflow: hidden;
+    padding: 50px;
+    font-weight: 700;
+    font-size: 64px;
+    letter-spacing: -4px;
+}
+
+.container::-webkit-scrollbar {
+    display: none;
+}

@@ -1,51 +1,28 @@
-import { useState } from 'react'
 import { motion } from 'framer-motion'
 import styles from './styles.module.css'
-import { AuthDialogProps } from '../../../types'
+import { AuthDialogProps, LoginFormValues } from '../../../types'
 import Overlay from '../../Container/Overlay'
-import { Client, Account, ID } from "appwrite";
+import { Formik, Field, Form, FormikHelpers } from 'formik';
+import { Button, Input } from '../../';
+import textConstants from '../../../textConstants';
+import * as Yup from 'yup';
+import { useAuth } from '../../../providers/auth'
+import { useNavigate } from "react-router-dom";
 
-let client: Client;
-let account: Account;
+const LoginSchema = Yup.object().shape({
+    email: Yup.string().email('Invalid email').required('Required'),
+    password: Yup.string().required('Required')
+});
 
-try {
-    client = new Client()
-        .setEndpoint(import.meta.env.VITE_APPWRITE_ENDPOINT)
-        .setProject(import.meta.env.VITE_APPWRITE_PROJECT);
-    account = new Account(client);
-} catch (error) {
-    console.error('Something went wrong.', error);
-}
-
-const AuthDialog = ({ type, layoutId, isOpen, showDialog }: AuthDialogProps) => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
-
-    const handleLogin = async () => {
-
-    }
-
-    const handleSignup = async () => {
-        if (password !== confirmPassword) {
-            alert('Passwords do not match');
-            return;
-        }
-
-        const promise = account.create(ID.unique(), 'misterm@test.com', 'misterm12345');
-        promise.then(function (response) {
-            console.log(response);
-        }, function (error) {
-            console.log(error);
-        });
-    }
+const AuthDialog = ({ type, layoutId }: AuthDialogProps) => {
+    const { login } = useAuth();
+    const navigate = useNavigate();
 
     return (
         <>
-            <Overlay isOpen={isOpen} />
-            <motion.div
+            <Overlay />
+            <div
                 className={styles.authDialogContainer}
-                onClick={() => showDialog ? showDialog(false) : null}
             >
                 <motion.div
                     layoutId={layoutId}
@@ -54,20 +31,79 @@ const AuthDialog = ({ type, layoutId, isOpen, showDialog }: AuthDialogProps) => 
                 >
 
                     {type === 'login' &&
-                        <h1>Login</h1>
+                        <div className={styles.loginForm}>
+                            <div className={styles.titleContainer}>
+                                <motion.span
+                                    layout='position'
+                                    layoutId={`Login-button-title`}
+                                    style={{
+                                        fontSize: '25px',
+                                        fontWeight: 600,
+                                    }}
+                                >{textConstants.loginForm.title}
+                                </motion.span>
+                            </div>
+                            <Formik
+                                initialValues={{
+                                    email: '',
+                                    password: '',
+                                    rememberMe: false,
+                                }}
+                                validationSchema={LoginSchema}
+                                onSubmit={(
+                                    values: LoginFormValues,
+                                    { setSubmitting }: FormikHelpers<LoginFormValues>
+                                ) => {
+                                    login(values.email, values.password);
+                                    setSubmitting(false);
+                                    navigate("/");
+                                }}
+                            >
+                                {({ values, handleChange, handleBlur, handleSubmit, errors, touched, isSubmitting }) => {
+                                    return (
+                                        <Form className={styles.form}>
+                                            <Field
+                                                id="email"
+                                                name="email"
+                                                placeholder=""
+                                                type="email"
+                                                onChange={handleChange}
+                                                onBlur={handleBlur}
+                                                value={values.email}
+                                                border={touched.email && errors.email ? "1px solid red" : null}
+                                                as={Input}
+                                            />
+                                            <Field
+                                                id="password"
+                                                name="password"
+                                                placeholder=""
+                                                type="password"
+                                                onChange={handleChange}
+                                                onBlur={handleBlur}
+                                                value={values.password}
+                                                border={touched.password && errors.password ? "1px solid red" : null}
+                                                as={Input}
+                                            />
+                                            <div className={styles.inputContainer}>
+                                                <label>
+                                                    <Field className={styles.rememberMe} id="rememberMe" name="rememberMe" type="checkbox" />
+                                                    {textConstants.loginForm.rememberMe}
+                                                </label>
+                                            </div>
+                                            <Button text='Continue' type='continue' onClick={handleSubmit} disabled={isSubmitting} />
+                                        </Form>
+                                    )
+                                }}
+                            </Formik>
+                        </div>
                     }
                     {type === 'signup' &&
                         <>
                             <h1>Sign Up</h1>
-                            <button
-                                onClick={() => handleSignup()}
-                            >
-                                sign up
-                            </button>
                         </>
                     }
                 </motion.div>
-            </motion.div>
+            </div>
         </>
     )
 }

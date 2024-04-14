@@ -1,22 +1,22 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import {
-  createBrowserRouter,
-  RouterProvider,
+  BrowserRouter
 } from "react-router-dom";
 import './index.css'
 
-import Root from './routes/Root'
-
-const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <Root />,
-  },
-]);
+import { AuthProvider } from './providers/auth';
+import App from './App';
+import { StationsProvider } from './providers/database';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <AuthProvider>
+      <StationsProvider>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </StationsProvider>
+    </AuthProvider>
   </React.StrictMode>,
 )
