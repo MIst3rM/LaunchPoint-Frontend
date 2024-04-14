@@ -1,9 +1,18 @@
 import { useEffect, useState } from "react";
 import { motion, useIsPresent, Reorder } from "framer-motion";
-import { Content, Section, Counter, Header, Hero, HealthStatusIndicator, OnlineStatusIndicator, Sidebar, Ticker, DownArrow, TickerCard } from "../../components";
+import { Content, Section, Counter, Header, Hero, HealthStatusIndicator, Sidebar, Ticker, DownArrow, TickerCard, Notification, TextSpinnerLoader } from "../../components";
 import textConstants from "../../textConstants";
 import styles from "./styles.module.css";
 import { RootRouteProps } from "../../types";
+import { Outlet } from "react-router-dom";
+import { useStations } from "../../providers/database";
+import { useAuth } from "../../providers/auth";
+
+import { Databases, Query } from "appwrite";
+
+const database_id = import.meta.env.VITE_APPWRITE_DATABASE_ID
+const stations_collection_id = import.meta.env.VITE_STATION_COLLECTION_ID
+const maintenance_collection_id = import.meta.env.VITE_MAINTENANCE_COLLECTION_ID
 
 const sectionHoverEffect = {
   whileHover: {
@@ -33,21 +42,16 @@ const sidebarVariants = {
   }
 }
 
-const Root = ({ loggedInUser } : RootRouteProps) => {
+const Root = ({ loggedInUser }: RootRouteProps) => {
   const isPresent = useIsPresent();
+  const { client } = useAuth();
+  const databases = new Databases(client);
 
-  //TODO: Replace this with a proper API call to get the total number of stations
-  const [totalStations, setTotalStations] = useState(100);
+  const [notifications, setNotifications] = useState([]);
+  const [tickerSlots, setTickerSlots] = useState([]);
+  const { totalStationsDigitsArray, onlineStationsDigitsArray, systemHealth } = useStations();
 
-  //TODO: Replace this with a proper API call to get the number of active stations
-  const [onlineStations, setOnlineStations] = useState(52);
-
-  const [totalStationsDigitsArray, setTotalStationsDigitsArray] = useState(String(totalStations).padStart(3, '0').split('').map(Number));
-  const [onlineStationsDigitsArray, setOnlineStationsDigitsArray] = useState(String(onlineStations).padStart(3, '0').split('').map(Number));
-
-  //TODO: Replace this with a proper API call to get the health percentage of the entire system
-  const [systemHealth, setSystemHealth] = useState((onlineStations / totalStations) * 100);
-
+  const [isAllDataLoaded, setIsAllDataLoaded] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const [isTickerSectionExpanded, setIsTickerSectionExpanded] = useState(false);
@@ -64,6 +68,13 @@ const Root = ({ loggedInUser } : RootRouteProps) => {
     setIsTickerSectionExpanded(!isTickerSectionExpanded)
   }
 
+  const tickerCardStyle = {
+    width: "300px",
+    height: "350px",
+    borderRadius: "15px",
+    backgroundColor: "rgb(44, 50, 60)",
+  };
+
   useEffect(() => {
     if (isTickerSectionExpanded) {
       setCardsContainerHeight(expandedHeight);
@@ -72,28 +83,80 @@ const Root = ({ loggedInUser } : RootRouteProps) => {
     }
   }, [isTickerSectionExpanded]);
 
+  useEffect(() => {
+    if (loggedInUser) {
+      const promise = databases.listDocuments(
+        database_id,
+        maintenance_collection_id,
+        [
+          Query.equal('seen', false),
+        ]
+      );
 
-  const tickerSlots = Array.from({ length: 5 }).map((_, index) => {
+      promise.then(response => {
+        setNotifications(response.documents);
+      }).catch(error => {
+        console.log(error);
+      });
 
-    const tickerCardStyle = {
-      width: "300px",
-      height: "350px",
-      borderRadius: "15px",
-      backgroundColor: "rgb(44, 50, 60)",
-    };
+      const unsubscribe = client.subscribe(`databases.${database_id}.collections.${maintenance_collection_id}.documents`, (response) => {
+        if (!response.payload.seen) {
+          setNotifications(currentNotifications => [...currentNotifications, response.payload]);
+        }
+      });
 
-    return (
-      <TickerCard
-        key={index}
-        id={`${index + 1}`}
-        style={tickerCardStyle} />
-    )
-  });
+      return () => {
+        console.log('Unsubscribing');
+        unsubscribe();
+      };
+    }
+  }, [loggedInUser]);
+
+  useEffect(() => {
+    if (totalStationsDigitsArray.length > 0 && onlineStationsDigitsArray.length > 0 && systemHealth > 0 && tickerSlots.length > 0) {
+      setIsAllDataLoaded(true);
+    }
+  }, [totalStationsDigitsArray, onlineStationsDigitsArray, systemHealth, tickerSlots, loggedInUser]);
+
+  const handleNotificationClose = (notification_id) => {
+
+    databases.updateDocument(database_id, maintenance_collection_id, notification_id, {
+      seen: true
+    });
+
+    setNotifications(notifications.filter(notification => notification.$id !== notification_id));
+  }
+
+  useEffect(() => {
+    if (loggedInUser) {
+      const promise = databases.listDocuments(
+        database_id,
+        stations_collection_id
+      );
+
+      promise.then(response => {
+        const slots = response.documents.map((station, index) => {
+          return (
+            <TickerCard
+              key={station.$id}
+              data={station}
+              style={tickerCardStyle}
+            />
+          )
+        });
+
+        setTickerSlots(slots);
+      }).catch(error => {
+        console.log(error);
+      });
+    }
+  }, [loggedInUser]);
 
   return (
     <>
       <Header />
-      {!loggedInUser &&
+      <Outlet />
+      {!loggedInUser ? (
         <Content>
           <Section customProps={{
             classes: [styles.signedOut]
@@ -105,75 +168,76 @@ const Root = ({ loggedInUser } : RootRouteProps) => {
             </Hero>
           </Section>
         </Content>
-      }
-      {loggedInUser &&
-        <Content>
-          <Section customProps={{
-            classes: [styles.signedIn]
-          }}>
+      ) :
+        isAllDataLoaded ? (
+          <Content>
             <Section customProps={{
-              classes: [styles.row]
+              classes: [styles.signedIn]
             }}>
-              <Section
-                customProps={{
-                  classes: [styles.stationsOverview],
-                  effects: sectionHoverEffect
-                }}
-              >
-                <OnlineStatusIndicator />
-                <h3>{textConstants.dashboardOverviewPage.total_stations}</h3>
-                <Counter targetDigits={totalStationsDigitsArray} />
-                <h3>{textConstants.dashboardOverviewPage.active_stations}</h3>
-                <Counter targetDigits={onlineStationsDigitsArray} />
-              </Section>
-
-              <Section
-                customProps={{
-                  classes: [styles.systemHealth],
-                  effects: sectionHoverEffect
-                }}>
-                <Sidebar openSidebar={setIsSidebarOpen} />
-                <motion.h1
-                  variants={sidebarVariants}
-                  initial={false}
-                  animate={isSidebarOpen ? "open" : "closed"}
+              <Section customProps={{
+                classes: [styles.row]
+              }}>
+                <Section
+                  customProps={{
+                    classes: [styles.stationsOverview],
+                    effects: sectionHoverEffect
+                  }}
                 >
-                  {textConstants.dashboardOverviewPage.system_health}
-                </motion.h1>
-                <HealthStatusIndicator
-                  healthPercentage={systemHealth}
-                  isSidebarOpen={isSidebarOpen}
-                />
+                  <h3>{textConstants.dashboardOverviewPage.total_stations}</h3>
+                  <Counter targetDigits={totalStationsDigitsArray} />
+                  <h3>{textConstants.dashboardOverviewPage.active_stations}</h3>
+                  <Counter targetDigits={onlineStationsDigitsArray} />
+                </Section>
+
+                <Section
+                  customProps={{
+                    classes: [styles.systemHealth],
+                    effects: sectionHoverEffect
+                  }}>
+                  <Sidebar openSidebar={setIsSidebarOpen} />
+                  <motion.h1
+                    variants={sidebarVariants}
+                    initial={false}
+                    animate={isSidebarOpen ? "open" : "closed"}
+                  >
+                    {textConstants.dashboardOverviewPage.system_health}
+                  </motion.h1>
+                  <HealthStatusIndicator
+                    healthPercentage={systemHealth}
+                    isSidebarOpen={isSidebarOpen}
+                  />
+                </Section>
+              </Section>
+              <Section customProps={{
+                classes: [styles.row]
+              }}>
+                <Section
+                  customProps={{
+                    classes: [styles.cardsContainer],
+                    effects: sectionExpandEffect,
+                  }}
+                >
+                  <h1
+                    className={styles.cardsContainerHeader}>
+                    {textConstants.dashboardOverviewPage.stations}
+                  </h1>
+                  <Ticker
+                    slots={tickerSlots}
+                    gap={24}
+                    padding={10}
+                    direction={"left"}
+                    speed={100}
+                    hoverFactor={0.5}
+                    alignment={"center"}
+                  />
+                </Section>
               </Section>
             </Section>
-            <Section customProps={{
-              classes: [styles.row]
-            }}>
-              <Section
-                customProps={{
-                  classes: [styles.cardsContainer],
-                  effects: sectionExpandEffect,
-                }}
-              >
-                <h1
-                  className={styles.cardsContainerHeader}>
-                  {textConstants.dashboardOverviewPage.stations}
-                </h1>
-                <Ticker
-                  slots={tickerSlots}
-                  gap={24}
-                  padding={10}
-                  direction={"left"}
-                  speed={100}
-                  hoverFactor={0.5}
-                  alignment={"center"}
-                />
-                <DownArrow isExpanded={isTickerSectionExpanded} handleClick={handleArrowClick} />
-              </Section>
-            </Section>
-          </Section>
-        </Content>
-      }
+          </Content>
+        ) : (
+          <TextSpinnerLoader />
+        )}
+      <Notification notifications={notifications} updateNotifications={handleNotificationClose} />
     </>
   );
 };

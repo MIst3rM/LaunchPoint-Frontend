@@ -1,0 +1,12 @@
+.button {
+    outline: none;
+    cursor: pointer;
+}
+
+.close {
+    position: absolute;
+    top: 15px;
+    right: 10px;
+    background: white;
+    border: none;
+}

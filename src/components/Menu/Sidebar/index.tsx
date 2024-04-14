@@ -55,7 +55,9 @@ const Sidebar = ({ navClasses, backgroundClasses, openSidebar }: SidebarProps) =
             custom={dimensions?.height}
             ref={containerRef}
         >
-            <motion.div className={backgroundClassName} />
+            <motion.div className={backgroundClassName}>
+
+            </motion.div>
             <MenuToggle toggle={() => toggleOpen()} />
         </motion.nav>
     );

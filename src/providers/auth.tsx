@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, ReactNode, useCallback } from 'react';
+import { createContext, useContext, useState, ReactNode, useCallback, useMemo } from 'react';
 import { Client, Account, Models } from "appwrite";
 import { AuthContextType } from '../types';
 
@@ -42,9 +42,19 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         }
     }, []);
 
-    // Provide the context with the login method and any other auth methods needed
+    const logout = useCallback(async () => {
+        try {
+            await account.deleteSession('current');
+            setLoggedInUser(null);
+        } catch (error) {
+            console.error(error);
+        }
+    }, [])
+
+    const authContextValue = useMemo(() => ({ loggedInUser, login, logout, fetchLoggedInUser, loading, client }), [loggedInUser, login, fetchLoggedInUser, loading, client]);
+
     return (
-        <AuthContext.Provider value={{ loggedInUser, login, fetchLoggedInUser, loading, client }}>
+        <AuthContext.Provider value={authContextValue}>
             {children}
         </AuthContext.Provider>
     );

@@ -1,5 +1,5 @@
-import {useEffect, cloneElement} from "react";
-import { useLocation, useRoutes } from "react-router-dom";
+import { useEffect } from "react";
+import { useRoutes } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
 import Root from "./routes/Root";
 import { AuthDialog } from "./components";
@@ -7,6 +7,7 @@ import { useAuth } from "./providers/auth";
 import Livemap from "./routes/Livemap";
 import Deployments from "./routes/Deployments";
 import { ImageData } from "./types";
+import { AuthenticatedRouteWrapper } from "./helpers/auth-route-wrapper";
 
 const pexel = (id: number) => `https://images.pexels.com/photos/${id}/pexels-photo-${id}.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260`
 const images: ImageData[] = [
@@ -27,49 +28,48 @@ const images: ImageData[] = [
 
 const App = () => {
 
-    const { loggedInUser, fetchLoggedInUser, client } = useAuth();
+    const { loggedInUser, fetchLoggedInUser, loading } = useAuth();
 
     useEffect(() => {
-        if(loggedInUser)
-            fetchLoggedInUser();
+        fetchLoggedInUser();
     }, [fetchLoggedInUser]);
 
     const element = useRoutes([
         {
             path: "/",
             element: <Root loggedInUser={loggedInUser} />,
-        },
-        {
-            path: "/login",
-            element: <AuthDialog type='login' layoutId='loginLayout' />
-        },
-        {
-            path: "/signup",
-            element: <AuthDialog type='signup' layoutId='signupLayout' />
+            children: [
+                {
+                    path: "login",
+                    element: <AuthDialog type='login' layoutId='loginLayout' />
+                },
+                {
+                    path: "signup",
+                    element: <AuthDialog type='signup' layoutId='signupLayout' />
+                }
+            ]
         },
         {
             path: "/livemap",
-            element: <Livemap />
+            element: <AuthenticatedRouteWrapper loggedInUser={loggedInUser}><Livemap /></AuthenticatedRouteWrapper>
         },
         {
             path: "/deployments",
-            element: <Deployments images={images} />,
+            element: <AuthenticatedRouteWrapper loggedInUser={loggedInUser}><Deployments images={images} /></AuthenticatedRouteWrapper>,
             children: [
                 {
                     path: "item/:id",
-                    // element: <Deployments images={images} />,
+                    element: <AuthenticatedRouteWrapper loggedInUser={loggedInUser}><Deployments images={images} /></AuthenticatedRouteWrapper>,
                     children: [
                         {
                             path: "stations",
-                            // element: <Deployments images={images} />,
+                            element: <AuthenticatedRouteWrapper loggedInUser={loggedInUser}><Deployments images={images} /></AuthenticatedRouteWrapper>,
                         }
                     ]
                 }
             ]
         }
     ]);
-
-    const location = useLocation();
 
     if (!element) return null;
 

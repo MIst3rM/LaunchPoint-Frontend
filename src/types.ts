@@ -59,6 +59,7 @@ export interface LoginFormValues {
 export interface AuthContextType {
     loggedInUser: Models.User<Models.Preferences> | null;
     login: (email: string, password: string) => Promise<void>;
+    logout: () => Promise<void>;
     fetchLoggedInUser: () => Promise<void>;
     loading: boolean;
     client: Client;
@@ -156,12 +157,11 @@ export interface TickerProps {
 }
 
 export interface TickerCardProps {
-    id: string;
     style?: CSSProperties;
-    data?: { [key: string]: any };
+    data?: any;
 }
 
-export type ButtonType = 'login' | 'signup' | 'edit' | 'delete' | 'continue';
+export type ButtonType = 'login' | 'logout' | 'signup' | 'edit' | 'delete' | 'continue' | 'seemore';
 
 export type AuthDialogType = 'login' | 'signup';
 

@@ -4,6 +4,7 @@ const textConstants = {
   },
   buttons: {
     login: ['login', 'Login'],
+    logout: ['logout', 'Logout'],
     signup: ['signup', 'Sign Up'],
     submit: ['submit', 'Submit'],
     viewMore: ['viewmore', 'View More'],

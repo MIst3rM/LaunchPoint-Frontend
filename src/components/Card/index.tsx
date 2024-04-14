@@ -31,26 +31,38 @@ const Card = ({ station, client }: CardProps) => {
         }));
     };
 
+    const formatDroneModel = (model) => {
+        return model
+            .split('_') // Split the string into an array of words based on underscores
+            .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()) // Capitalize the first letter of each word and lowercase the rest
+            .join(' '); // Join the array back into a single string with spaces
+    };
+
+    const getBatteryStatusMessage = (status) => {
+        switch (status) {
+            case 'UNAVAILABLE':
+                return 'Battery is currently unavailable';
+            case 'MAINTENANCE_NEEDED':
+                return 'Battery requires maintenance';
+            case 'AVAILABLE':
+            default:
+                return 'Battery is available for use';
+        }
+    };
+
     useEffect(() => {
         // // Sort the slots initially
         console.log(station)
         setSlots(station.slots.slice().sort((a, b) => a.order_in_grid - b.order_in_grid));
 
-        // // Construct an array of channels to subscribe to based on battery IDs
-        // const channels = station.slots
-        //     .filter(slot => slot.battery && slot.battery.$id)
-        //     .map(slot => `databases.${database_id}.collections.${batteries_collection_id}.documents.${slot.battery.$id}`);
+        // const unsubscribe = client.subscribe(`databases.${database_id}.collections.${batteries_collection_id}.documents`, (response) => {
+        //     updateBatteryLevel(response.payload.$id, response.payload.charge_level);
+        // });
 
-        // if (channels.length > 0) {
-        const unsubscribe = client.subscribe(`databases.${database_id}.collections.${batteries_collection_id}.documents`, (response) => {
-            updateBatteryLevel(response.payload.$id, response.payload.charge_level);
-        });
-
-        return () => {
-            console.log('Unsubscribing');
-            unsubscribe();
-        };
-        // }
+        // return () => {
+        //     console.log('Unsubscribing');
+        //     unsubscribe();
+        // };
     }, [station.slots, client]);
 
     // Function to handle mouse entering a cell
@@ -67,7 +79,7 @@ const Card = ({ station, client }: CardProps) => {
         <div className={styles.container}>
             <div className={styles.row}>
                 <h1>{station.name}</h1>
-                {/* <OnlineStatusIndicator /> */}
+                <OnlineStatusIndicator status={station.status} position={`flex-start`} />
             </div>
             <div className={styles.row} style={{
                 height: "500px"
@@ -112,11 +124,13 @@ const Card = ({ station, client }: CardProps) => {
                                     animate={{ x: 0, opacity: 1 }}
                                     exit={{ x: -100, opacity: 0 }}
                                     transition={{ duration: 0.5 }}
+                                    style={{ display: "flex", flexDirection: "column", width: "100%" }}
                                 >
-                                    <h2>{hoveredBattery.$id}</h2>
-                                    <p>{hoveredBattery.drone_model}</p>
-                                    <p>Capacity: {hoveredBattery.capacity}</p>
-                                    {hoveredBattery.warning && <p>Warning: {hoveredBattery.warning}</p>}
+                                    <span style={{ alignSelf: "flex-start", fontWeight: 600, lineHeight: 2.5 }}>{getBatteryStatusMessage(hoveredBattery.status)}</span>
+                                    <span style={{ alignSelf: "flex-end" }}>{`Drone Model: ${formatDroneModel(hoveredBattery.drone_model)}`}</span>
+                                    <span style={{ alignSelf: "flex-end" }}>{`Capacity: ${hoveredBattery.capacity} mAh`}</span>
+                                    <h3>History</h3>
+                                    <div className={styles.historySection}></div>
                                 </motion.div>
                             ) : (
                                 <motion.div

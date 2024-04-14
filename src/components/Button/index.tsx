@@ -5,10 +5,12 @@ import { Link } from 'react-router-dom';
 
 const buttonStyles: { [key in ButtonType]: string } = {
     login: styles.loginButton,
+    logout: styles.logoutButton,
     signup: styles.signupButton,
     edit: styles.editButton,
     delete: styles.deleteButton,
     continue: styles.continueButton,
+    seemore: styles.seeMoreButton,
 };
 
 const Button = ({ text, type, layoutId, onClick, disabled }: ButtonProps) => {
